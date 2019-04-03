@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.MouseInfo;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -24,6 +25,10 @@ import net.java.games.input.ControllerEnvironment;
 
 @SuppressWarnings("serial")
 public class WindowSim3 extends JPanel implements MouseListener{
+
+	static final double screenHeight = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+	static final double screenWidth = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+
 
 	WindowSim3(){
 		addMouseListener(this);
@@ -203,8 +208,8 @@ return new double[] {leftPwm, rightPwm};
 	double omega = 0;
 	double alpha = 0;
 
-	double x = 720;
-	double y = 450;
+	double x = screenWidth/2;
+	double y = screenHeight/2;
 	double v = 1;
 	double a = 0;
 	
@@ -301,7 +306,7 @@ return new double[] {leftPwm, rightPwm};
 		JFrame frame = new JFrame("Joystick Sim");
 		WindowSim3 game = new WindowSim3();
 		frame.add(game);
-		frame.setSize(1439, 899);
+		frame.setSize((int)screenWidth, (int)screenHeight);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -336,8 +341,8 @@ return new double[] {leftPwm, rightPwm};
 	}
 	
 	private static void getMouseData() {
-		rawX = (MouseInfo.getPointerInfo().getLocation().getX() - 720.0) / 720.0;
-		rawY = (MouseInfo.getPointerInfo().getLocation().getY() - 450.0) / -450.0;
+		rawX = (MouseInfo.getPointerInfo().getLocation().getX() - (screenWidth/2)) / (screenWidth/2);
+		rawY = (MouseInfo.getPointerInfo().getLocation().getY() - (screenHeight/2)) / -(screenHeight/2);
 		scaledX = rawX * 0.1;
 		scaledY = rawY * 0.5;
 	}
