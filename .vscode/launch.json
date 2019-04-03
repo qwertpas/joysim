@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - WindowSim3",
+            "request": "launch",
+            "mainClass": "jinputjoysticktestv2.WindowSim3",
+            "projectName": "joysim"
+        }
+    ]
+}

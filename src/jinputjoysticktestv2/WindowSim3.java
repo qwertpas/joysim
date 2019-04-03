@@ -1,11 +1,14 @@
 package jinputjoysticktestv2;
 
-
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.MouseInfo;
 import java.awt.RenderingHints;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,7 +23,12 @@ import net.java.games.input.ControllerEnvironment;
 
 
 @SuppressWarnings("serial")
-public class WindowSim3 extends JPanel{
+public class WindowSim3 extends JPanel implements MouseListener{
+
+	WindowSim3(){
+		addMouseListener(this);
+	}
+
 	
 	//turnfunc
 	
@@ -53,7 +61,9 @@ public class WindowSim3 extends JPanel{
 
     private double mOldWheel = 0.0;
     private double mQuickStopAccumlator = 0.0;
-    private double mNegInertiaAccumlator = 0.0;
+	private double mNegInertiaAccumlator = 0.0;
+	
+	private Boolean isQuickTurn = false;
 	
 	public double[] cheesyDrive(double throttle, double wheel, boolean isQuickTurn,
             boolean isHighGear) {
@@ -199,7 +209,7 @@ return new double[] {leftPwm, rightPwm};
 	double a = 0;
 	
 	double linEfficiency = 0.95;
-	double rotEfficiency = 0.7;
+	double rotEfficiency = 0.5;
 	
     private static ArrayList<Controller> foundControllers;
 	
@@ -218,8 +228,8 @@ return new double[] {leftPwm, rightPwm};
 	private void moveBall() {
 		
 //		double[] power = joymap(-scaledX, -scaledY);
-		double[] power = cheesyDrive(-scaledY, -scaledX * 0.5, false, true);
-		
+		double[] power = cheesyDrive(-scaledY, -scaledX * 0.5, isQuickTurn, false);
+
 
 		
 		alpha = power[1] - power[0];
@@ -275,13 +285,14 @@ return new double[] {leftPwm, rightPwm};
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
 		
-		g2d.rotate(theta, x + 36, y + 36);
+		g2d.rotate(theta, x+32, y+32);
 		g.drawImage(image, (int)Math.round(x), (int)Math.round(y), this);
 
 	}
 
 	public static void main(String[] args) throws InterruptedException {
-		File file = new File("/Users/yiyi/Desktop/Eclipse-work/tests/src/frc/rocket.png");
+
+		File file = new File("./robot.png");
 		try {
 			image = ImageIO.read(file);
 		} catch (IOException e) {
@@ -290,7 +301,7 @@ return new double[] {leftPwm, rightPwm};
 		JFrame frame = new JFrame("Joystick Sim");
 		WindowSim3 game = new WindowSim3();
 		frame.add(game);
-		frame.setSize(799, 600);
+		frame.setSize(1439, 899);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -327,8 +338,8 @@ return new double[] {leftPwm, rightPwm};
 	private static void getMouseData() {
 		rawX = (MouseInfo.getPointerInfo().getLocation().getX() - 720.0) / 720.0;
 		rawY = (MouseInfo.getPointerInfo().getLocation().getY() - 450.0) / -450.0;
-		scaledX = rawX * 0.3;
-		scaledY = rawY * 1;
+		scaledX = rawX * 0.1;
+		scaledY = rawY * 0.5;
 	}
 	
 	private static void startShowingControllerData(){
@@ -402,6 +413,29 @@ return new double[] {leftPwm, rightPwm};
                 
             }
         }
-    }
+	}
+	
+
+
+
+	
+    public void mousePressed(MouseEvent e) {
+		isQuickTurn = true;
+	 }
+ 
+	 public void mouseReleased(MouseEvent e) {
+		isQuickTurn = false;
+	 }
+ 
+	 public void mouseEntered(MouseEvent e) {
+	 }
+ 
+	 public void mouseExited(MouseEvent e) {
+	 }
+ 
+	 public void mouseClicked(MouseEvent e) {
+		System.out.println("CLKICKED");
+
+	 }
 	
 }
