@@ -23,12 +23,12 @@ import net.java.games.input.Controller;
 import net.java.games.input.ControllerEnvironment;
 
 @SuppressWarnings("serial")
-public class WindowSim3 extends JPanel implements MouseListener {
+public class VisionTargetSim extends JPanel implements MouseListener {
 
 	static final double screenHeight = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 	static final double screenWidth = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 
-	WindowSim3() {
+	VisionTargetSim() {
 		addMouseListener(this);
 	}
 
@@ -187,7 +187,9 @@ public class WindowSim3 extends JPanel implements MouseListener {
 
 	// things to run windowsim
 
-	static Image image;
+	static Image robotImage;
+	static Image targetImage;
+
 
 	static double rawX;
 	static double rawY;
@@ -267,25 +269,33 @@ public class WindowSim3 extends JPanel implements MouseListener {
 
 	@Override
 	public void paint(Graphics g) {
+
+
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.drawImage(targetImage, (int)screenWidth/2, 100, this);
 
 		g2d.rotate(theta, x + 32, y + 32);
-		g.drawImage(image, (int) Math.round(x), (int) Math.round(y), this);
+		g.drawImage(robotImage, (int) Math.round(x), (int) Math.round(y), this);
+
+
+		
 
 	}
 
 	public static void main(String[] args) throws InterruptedException {
 
-		File file = new File("./robot.png");
+		File robotFile = new File("./robot.png");
+		File targetFile = new File("./target.png");
 		try {
-			image = ImageIO.read(file);
+			robotImage = ImageIO.read(robotFile);
+			targetImage = ImageIO.read(targetFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		JFrame frame = new JFrame("Joystick Sim");
-		WindowSim3 game = new WindowSim3();
+		VisionTargetSim game = new VisionTargetSim();
 		frame.add(game);
 		frame.setSize((int) screenWidth, (int) screenHeight);
 		frame.setVisible(true);

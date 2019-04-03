@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - VisionTargetSim",
+            "request": "launch",
+            "mainClass": "jinputjoysticktestv2.VisionTargetSim",
+            "projectName": "joysim"
+        },
+        {
+            "type": "java",
             "name": "CodeLens (Launch) - WindowSim3",
             "request": "launch",
             "mainClass": "jinputjoysticktestv2.WindowSim3",
