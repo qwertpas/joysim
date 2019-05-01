@@ -23,21 +23,13 @@ import net.java.games.input.Controller;
 import net.java.games.input.ControllerEnvironment;
 
 @SuppressWarnings("serial")
-public class WindowSim3 extends JPanel implements MouseListener {
+public class JoystickSim extends JPanel implements MouseListener {
 
 	static final double screenHeight = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 	static final double screenWidth = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 
-	WindowSim3() {
+	JoystickSim() {
 		addMouseListener(this);
-	}
-
-	// turnfunc
-
-	public static double[] joymap(double rawX, double rawY) {
-		double x = 0.25 * sensCurve(rawX, 2);
-		double y = sensCurve(rawY, 3);
-		return new double[] { y + x, y - x };
 	}
 
 	private static final double kThrottleDeadband = 0.02;
@@ -67,6 +59,142 @@ public class WindowSim3 extends JPanel implements MouseListener {
 	private double mNegInertiaAccumlator = 0.0;
 
 	private Boolean isQuickTurn = false;
+
+	
+
+	// things to run windowsim
+
+	static Image image;
+
+	static double rawX;
+	static double rawY;
+
+	static double scaledX;
+	static double scaledY;
+
+	final double margin = 20;
+
+	double theta = 0;
+	double omega = 0;
+	double alpha = 0;
+
+	double x = screenWidth / 2;
+	double y = screenHeight / 2;
+	double v = 1;
+	double a = 0;
+
+	double linEfficiency = 0.95;
+	double rotEfficiency = 0.5;
+
+	private static ArrayList<Controller> foundControllers;
+
+	private void moveBall() {
+		// double[] power = joymap(-scaledX, -scaledY);
+		double[] power = cheesyDrive(-scaledY, -scaledX, isQuickTurn, false);
+
+		alpha = power[1] - power[0];
+		omega = (omega + alpha) * rotEfficiency;
+		theta = theta + omega;
+
+		a = (power[0] + power[1]) / 2.0;
+		v = (v + a) * linEfficiency;
+
+		x = x + (v * -Math.sin(theta));
+		y = y + (v * Math.cos(theta));
+
+		if (x < margin) {
+			x = margin;
+			v = 0;
+			System.out.println("hit left wall");
+		}
+		if (x > getWidth() - margin - 30) {
+			x = getWidth() - margin - 30;
+			v = 0;
+			System.out.println("hit right wall");
+		}
+		if (y < margin) {
+			y = margin;
+			v = 0;
+			System.out.println("hit top wall");
+		}
+		if (y > getHeight() - margin - 30) {
+			y = getHeight() - margin - 30;
+			v = 0;
+			System.out.println("hit bottom wall");
+		}
+
+		System.out.println("a: " + a);
+		System.out.println("v: " + v);
+		System.out.println("x: " + x);
+		System.out.println("y: " + y);
+		System.out.println("alpha: " + alpha);
+		System.out.println("theta: " + theta);
+		System.out.println("rawX: " + rawX);
+		System.out.println("rawY: " + rawY);
+	}
+
+	@Override
+	public void paint(Graphics g) {
+		super.paint(g);
+		Graphics2D g2d = (Graphics2D) g;
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+		g2d.rotate(theta, x + 32, y + 32);
+		g.drawImage(image, (int) Math.round(x), (int) Math.round(y), this);
+
+	}
+
+	public static void main(String[] args) throws InterruptedException {
+		File file = new File("./robot.png");
+		try {
+			image = ImageIO.read(file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		JFrame frame = new JFrame("Joystick Sim");
+		JoystickSim game = new JoystickSim();
+		frame.add(game);
+		frame.setSize((int) screenWidth, (int) screenHeight);
+		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		foundControllers = new ArrayList<>();
+		searchForControllers();
+
+		// If at least one controller was found we start showing controller data on
+		// window.
+		if (!foundControllers.isEmpty()) {
+			while (true) {
+				startShowingControllerData();
+				game.moveBall();
+				game.repaint();
+				Thread.sleep(20);
+			}
+		} else {
+			System.out.println("No controller found, using mouse coords");
+			while (true) {
+				getMouseData();
+				game.moveBall();
+				game.repaint();
+				Thread.sleep(20);
+				;
+			}
+		}
+
+	}
+	public static double round(double number) {
+		return ((Math.round(number * 10000.0)) / 10000.0);
+	}
+
+	public static double sensCurve(double joystickVal, double exponent) {
+		return Math.copySign(Math.pow(Math.abs(joystickVal), exponent), joystickVal);
+	}
+
+	public static double[] joymap(double rawX, double rawY) {
+		double x = 0.25 * sensCurve(rawX, 2);
+		double y = sensCurve(rawY, 3);
+		return new double[] { y + x, y - x };
+	}
 
 	public double[] cheesyDrive(double throttle, double wheel, boolean isQuickTurn, boolean isHighGear) {
 
@@ -170,155 +298,7 @@ public class WindowSim3 extends JPanel implements MouseListener {
 		}
 		return new double[] { leftPwm, rightPwm };
 	}
-
-	public double handleDeadband(double val, double deadband) {
-		return (Math.abs(val) > Math.abs(deadband)) ? val : 0.0;
-	}
-
-	public double limit(double val, double limit) {
-		if (val > limit) {
-			return limit;
-		} else if (val < -limit) {
-			return -limit;
-		} else {
-			return val;
-		}
-	}
-
-	// things to run windowsim
-
-	static Image image;
-
-	static double rawX;
-	static double rawY;
-
-	static double scaledX;
-	static double scaledY;
-
-	final double margin = 20;
-
-	double theta = 0;
-	double omega = 0;
-	double alpha = 0;
-
-	double x = screenWidth / 2;
-	double y = screenHeight / 2;
-	double v = 1;
-	double a = 0;
-
-	double linEfficiency = 0.95;
-	double rotEfficiency = 0.5;
-
-	private static ArrayList<Controller> foundControllers;
-
-	public static double round(double number) {
-		return ((Math.round(number * 10000.0)) / 10000.0);
-	}
-
-	public static double sensCurve(double joystickVal, double exponent) {
-		return Math.copySign(Math.pow(Math.abs(joystickVal), exponent), joystickVal);
-	}
-
-	private void moveBall() {
-
-		// double[] power = joymap(-scaledX, -scaledY);
-		double[] power = cheesyDrive(-scaledY, -scaledX * 0.5, isQuickTurn, false);
-
-		alpha = power[1] - power[0];
-		omega = (omega + alpha) * rotEfficiency;
-		theta = theta + omega;
-
-		a = (power[0] + power[1]) / 2.0;
-		v = (v + a) * linEfficiency;
-
-		x = x + (v * -Math.sin(theta));
-		y = y + (v * Math.cos(theta));
-
-		if (x < margin) {
-			x = margin;
-			v = 0;
-			System.out.println("hit left wall");
-		}
-		if (x > getWidth() - margin - 30) {
-			x = getWidth() - margin - 30;
-			v = 0;
-			System.out.println("hit right wall");
-		}
-		if (y < margin) {
-			y = margin;
-			v = 0;
-			System.out.println("hit top wall");
-		}
-		if (y > getHeight() - margin - 30) {
-			y = getHeight() - margin - 30;
-			v = 0;
-			System.out.println("hit bottom wall");
-		}
-
-		System.out.println("a: " + a);
-		System.out.println("v: " + v);
-		System.out.println("x: " + x);
-		System.out.println("y: " + y);
-		System.out.println("alpha: " + alpha);
-		System.out.println("theta: " + theta);
-		System.out.println("rawX: " + rawX);
-		System.out.println("rawY: " + rawY);
-	}
-
-	@Override
-	public void paint(Graphics g) {
-		super.paint(g);
-		Graphics2D g2d = (Graphics2D) g;
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-		g2d.rotate(theta, x + 32, y + 32);
-		g.drawImage(image, (int) Math.round(x), (int) Math.round(y), this);
-
-	}
-
-	public static void main(String[] args) throws InterruptedException {
-
-		File file = new File("./robot.png");
-		try {
-			image = ImageIO.read(file);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		JFrame frame = new JFrame("Joystick Sim");
-		WindowSim3 game = new WindowSim3();
-		frame.add(game);
-		frame.setSize((int) screenWidth, (int) screenHeight);
-		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-		foundControllers = new ArrayList<>();
-		searchForControllers();
-
-		// If at least one controller was found we start showing controller data on
-		// window.
-		if (!foundControllers.isEmpty()) {
-			while (true) {
-				startShowingControllerData();
-
-				game.moveBall();
-				game.repaint();
-				Thread.sleep(20);
-			}
-		} else {
-			System.out.println("No controller found, using mouse coords");
-
-			while (true) {
-				getMouseData();
-
-				game.moveBall();
-				game.repaint();
-				Thread.sleep(20);
-				;
-			}
-		}
-
-	}
-
+	
 	private static void getMouseData() {
 		rawX = (MouseInfo.getPointerInfo().getLocation().getX() - (screenWidth / 2)) / (screenWidth / 2);
 		rawY = (MouseInfo.getPointerInfo().getLocation().getY() - (screenHeight / 2)) / -(screenHeight / 2);
@@ -327,32 +307,25 @@ public class WindowSim3 extends JPanel implements MouseListener {
 	}
 
 	private static void startShowingControllerData() {
-
 		// Currently selected controller.
 		int selectedControllerIndex = 0;
 		Controller controller = foundControllers.get(selectedControllerIndex);
-
 		// Pull controller for current data, and break while loop if controller is
 		// disconnected.
 		if (!controller.poll()) {
 			System.out.println("ControllerDisconnected, using mouse coords");
 			getMouseData();
-
 		}
-
 		// Go trough all components of the controller.
 		Component[] components = controller.getComponents();
 		for (int i = 0; i < components.length; i++) {
 			Component component = components[i];
 			Identifier componentIdentifier = component.getIdentifier();
-
 			// Axes
 			if (component.isAnalog()) {
 				float axisValue = component.getPollData();
 				// X axis
-
 				System.out.println("using joystick");
-
 				if (componentIdentifier == Component.Identifier.Axis.X) {
 					rawX = axisValue;
 					scaledX = rawX * 0.2;
@@ -369,6 +342,20 @@ public class WindowSim3 extends JPanel implements MouseListener {
 					continue;
 				}
 			}
+		}
+	}
+
+	public double handleDeadband(double val, double deadband) {
+		return (Math.abs(val) > Math.abs(deadband)) ? val : 0.0;
+	}
+
+	public double limit(double val, double limit) {
+		if (val > limit) {
+			return limit;
+		} else if (val < -limit) {
+			return -limit;
+		} else {
+			return val;
 		}
 	}
 
@@ -404,7 +391,6 @@ public class WindowSim3 extends JPanel implements MouseListener {
 
 	public void mouseClicked(MouseEvent e) {
 		System.out.println("CLKICKED");
-
 	}
 
 }

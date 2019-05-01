@@ -2,6 +2,27 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - Robot",
+            "request": "launch",
+            "mainClass": "sim2.Robot",
+            "projectName": "joysim"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Physics",
+            "request": "launch",
+            "mainClass": "sim2.Physics",
+            "projectName": "joysim"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - JoystickSim",
+            "request": "launch",
+            "mainClass": "jinputjoysticktestv2.JoystickSim",
+            "projectName": "joysim"
+        },
+        {
+            "type": "java",
             "name": "CodeLens (Launch) - VisionTargetSim",
             "request": "launch",
             "mainClass": "jinputjoysticktestv2.VisionTargetSim",
