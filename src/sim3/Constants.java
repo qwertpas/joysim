@@ -19,6 +19,8 @@ public class Constants{
     static final double REDLINE_TORQUE_SLOPE = -3.779e-05;
     static final double GRAV_ACCEL = 9.81;
 
+    static final int CONTROLLER_INDEX = 0; //which joystick?
+
 
 
 
@@ -28,6 +30,7 @@ public class Constants{
     static final double KINE_FRIC = ROBOT_MASS * GRAV_ACCEL * KINE_FRIC_COEFF;
 
     static final double ROBOT_ROT_INERTIA = (1.0/6.0) * ROBOT_MASS * ROBOT_WIDTH * ROBOT_WIDTH;
+    // static final double ROBOT_ROT_INERTIA = 2;
     //https://en.wikipedia.org/wiki/List_of_moments_of_inertia
 
 

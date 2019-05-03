@@ -2,7 +2,7 @@ package sim3;
 
 public class Physics{
 
-    double x = 0;
+    double x = 5;
     double y = 0;
     double heading = 0;
     double distL;
@@ -44,8 +44,8 @@ public class Physics{
     public void update(){
         double dt = (System.nanoTime() - lastTime) / 1e+9; //change in time (seconds)
 
-        Robot.leftMotor.setVoltage(1);
-        Robot.rightMotor.setVoltage(2);
+        // Robot.leftMotor.setVoltage(0);
+        // Robot.rightMotor.setVoltage(1);
 
         torqueL = Robot.leftMotor.calcGearedTorque(veloL / Constants.WHEEL_RADIUS);
         torqueR = Robot.rightMotor.calcGearedTorque(veloR / Constants.WHEEL_RADIUS);
