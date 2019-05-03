@@ -6,12 +6,16 @@ public class Motor{
         CIM, miniCIM, Redline
     }
 
-
+    //only changes on contruction
     private double gearing;
     private Motor.Model motorModel;
     private int numMotors;
     private double stallTorque;
     private double torqueSlope;
+
+    //may change throughout operation
+    private Boolean isStalled;
+    private double voltage;
     
     public Motor(double gearing_input, Motor.Model motorModel_input, int numMotors_input){
         gearing = gearing_input;
@@ -31,30 +35,32 @@ public class Motor{
         }
     }
 
-    private double voltage;
     public void setVoltage(double voltage_input){
         voltage = voltage_input;
     }
 
-    public double calcUngearedTorque(double ungearedVelocity){
-        double torque;
-        if(voltage > 0){ //sketch but works probably
-            torque = numMotors * (voltage/12.0) * (torqueSlope * ungearedVelocity + stallTorque);
-            System.out.println(torque);
-            if(torque > stallTorque) torque = stallTorque;
-        }else{
-            torque = numMotors * (voltage/12.0) * (torqueSlope * -ungearedVelocity + stallTorque);
-            System.out.println(torque);
-            if(torque < -stallTorque) torque = -stallTorque;
+    public double calcUngearedTorque(double ungearedAngVelocity){
+        double torque = torqueSlope * Math.copySign(1, voltage) * ungearedAngVelocity + stallTorque; //base torque in direction of voltage
+        System.out.println(torque);
+        if(Math.abs(torque) >= stallTorque){
+            torque = numMotors * (voltage/12.0) * Math.copySign(stallTorque, torque); //maximum |torque| is stallTorque, apply scaling
+            isStalled = true;
+        } else {
+            torque = numMotors * (voltage/12.0) * torque;
+            isStalled = false;
         }
         return torque;
     }
 
-    public double calcGearedTorque(double gearedVelocity){
-        double ungearedVelocity = gearedVelocity * gearing;
-        double ungearedTorque = calcUngearedTorque(ungearedVelocity);
+    public double calcGearedTorque(double gearedAngVelocity){
+        double ungearedAngVelocity = gearedAngVelocity * gearing;
+        double ungearedTorque = calcUngearedTorque(ungearedAngVelocity);
         double gearedTorque = ungearedTorque * gearing;
         return gearedTorque;
+    }
+
+    public String toString(){
+        return "voltage: " + voltage + ", isStalled: " + isStalled;
     }
     
 

@@ -4,6 +4,13 @@
             "type": "java",
             "name": "CodeLens (Launch) - Robot",
             "request": "launch",
+            "mainClass": "sim3.Robot",
+            "projectName": "joysim"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Robot",
+            "request": "launch",
             "mainClass": "sim2.Robot",
             "projectName": "joysim"
         },

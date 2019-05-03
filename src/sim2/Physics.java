@@ -8,28 +8,28 @@ public class Physics{
     double v = 0;
     double angVelo = 0;
     double a = 0.1;
-    double angAccel = 0.0;
+    double angAccel = 0;
     long lastTime;
+
+    double veloL = 0;
+    double veloR = 0;
 
     double torqueL;
     double torqueR;
+    double torqueNet;
     double forceNet;
     double turnCenter;
-    Boolean isSlipping = false;
+    Boolean LSlipping = false;
+    Boolean RSlipping = false;
 
-    void calcTurnCenter(double vL, double vR){
-        turnCenter = Constants.HALF_DIST_BETWEEN_WHEELS * (vL + vR) / (vL - vR);
+    double calcTurnCenter(double vL, double vR){
+        return turnCenter = Constants.HALF_DIST_BETWEEN_WHEELS * (vL + vR) / (vL - vR);
     }
 
-    void calcNetForce(double torqueL, double torqueR){
-        double forceL = torqueL / Constants.WHEEL_RADIUS;
-        double forceR = torqueR / Constants.WHEEL_RADIUS;
-        forceNet = forceL + forceR;
-        if(forceNet > Constants.STATIC_FRIC){
-            isSlipping = true;
-            forceNet = Constants.KINE_FRIC;
-        }
-        else isSlipping = false;
+    double calcWheelForce(double torque){
+        double force = torque / Constants.WHEEL_RADIUS;
+        if(force > Constants.STATIC_FRIC * 0.5) force = Constants.KINE_FRIC;
+        return force;
     }
 
     public void init(){
@@ -39,10 +39,15 @@ public class Physics{
     public void update(){
         double dt = (System.nanoTime() - lastTime) / 1e+9;
 
-        // torqueL = Robot.leftMotor.calcGearedTorque(gearedVelocity);
-        // torqueL = Robot.leftMotor.calcGearedTorque(gearedVelocity);
+        torqueL = Robot.leftMotor.calcGearedTorque(veloL / Constants.WHEEL_RADIUS);
+        torqueR = Robot.rightMotor.calcGearedTorque(veloR / Constants.WHEEL_RADIUS);
 
-        calcNetForce(torqueL, torqueR);
+        double forceL = calcWheelForce(torqueL);
+        double forceR = calcWheelForce(torqueR);
+
+        // torqueNet = Constants.HALF_DIST_BETWEEN_WHEELS * ;
+        forceNet = forceL + forceR;
+
         a = forceNet / Constants.ROBOT_MASS;
         v = v + a*dt;
         x = x + v*dt*Math.cos(heading);
@@ -51,7 +56,7 @@ public class Physics{
     }
 
     public String toString(){
-        return x +" "+ y +" "+ heading +" "+ v +" "+ angVelo +" "+ a +" "+ angAccel +" "+ isSlipping;
+        return x +" "+ y +" "+ heading +" "+ v +" "+ angVelo +" "+ a +" "+ angAccel;
     }
 
     
