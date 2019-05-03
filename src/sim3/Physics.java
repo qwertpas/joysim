@@ -23,42 +23,37 @@ public class Physics{
     double torqueR;
     double torqueNet;
     double forceNet;
-    double turnCenter;
-    Boolean LSlipping = false;
-    Boolean RSlipping = false;
+    Boolean slipping = false;
 
-    double calcTurnCenter(double vL, double vR){
-        return turnCenter = Constants.HALF_DIST_BETWEEN_WHEELS * (vL + vR) / (vL - vR);
-    }
 
     double calcWheelForce(double torque){
         double force = torque / Constants.WHEEL_RADIUS;
-        if(force > Constants.STATIC_FRIC * 0.5) force = Constants.KINE_FRIC;
+        if(force > Constants.STATIC_FRIC * 0.5){
+            force = Constants.KINE_FRIC;
+            slipping = true;
+        } else slipping = false;
         return force;
     }
 
     public void init(){
         lastTime = System.nanoTime();
-        Robot.leftMotor.setVoltage(1);
-        Robot.rightMotor.setVoltage(1.01);
+        Robot.leftMotor.setVoltage(0);
+        Robot.rightMotor.setVoltage(0);
     }
 
     public void update(){
         double dt = (System.nanoTime() - lastTime) / 1e+9; //change in time (seconds)
 
         Robot.leftMotor.setVoltage(1);
-        Robot.rightMotor.setVoltage(1.01);
+        Robot.rightMotor.setVoltage(2);
 
         torqueL = Robot.leftMotor.calcGearedTorque(veloL / Constants.WHEEL_RADIUS);
         torqueR = Robot.rightMotor.calcGearedTorque(veloR / Constants.WHEEL_RADIUS);
 
         double forceL = calcWheelForce(torqueL);
         double forceR = calcWheelForce(torqueR);
-        calcTurnCenter(forceL, forceR);
 
-
-        torqueNet = (forceL * (turnCenter - Constants.HALF_DIST_BETWEEN_WHEELS)) + 
-                    (forceR * (turnCenter + Constants.HALF_DIST_BETWEEN_WHEELS));
+        torqueNet = (forceR - forceL) * Constants.HALF_DIST_BETWEEN_WHEELS; //torque around center of robot
         forceNet = forceL + forceR;
 
         angAccel = torqueNet / Constants.ROBOT_ROT_INERTIA;
@@ -73,8 +68,8 @@ public class Physics{
         distL = distL + veloL * dt;
         distR = distR + veloR * dt;
 
-        // x = x + linVelo * dt * Math.cos(heading);
-        // y = y + linVelo * dt * Math.sin(heading);
+        x = x + linVelo * dt * Math.cos(heading);
+        y = y + linVelo * dt * Math.sin(heading);
         lastTime = System.nanoTime();
     }
 

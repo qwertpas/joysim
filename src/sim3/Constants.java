@@ -17,14 +17,15 @@ public class Constants{
     static final double MINICIM_TORQUE_SLOPE = -0.0002413;
     static final double REDLINE_STALL_TORQUE = 0.7080;
     static final double REDLINE_TORQUE_SLOPE = -3.779e-05;
+    static final double GRAV_ACCEL = 9.81;
 
 
 
 
     // CALCULATED FROM REAL CONSTANTS
     static final double HALF_DIST_BETWEEN_WHEELS = DIST_BETWEEN_WHEELS / 2.0;
-    static final double STATIC_FRIC = ROBOT_MASS * STATIC_FRIC_COEFF;
-    static final double KINE_FRIC = ROBOT_MASS * KINE_FRIC_COEFF;
+    static final double STATIC_FRIC = ROBOT_MASS * GRAV_ACCEL * STATIC_FRIC_COEFF;
+    static final double KINE_FRIC = ROBOT_MASS * GRAV_ACCEL * KINE_FRIC_COEFF;
 
     static final double ROBOT_ROT_INERTIA = (1.0/6.0) * ROBOT_MASS * ROBOT_WIDTH * ROBOT_WIDTH;
     //https://en.wikipedia.org/wiki/List_of_moments_of_inertia

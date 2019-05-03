@@ -15,7 +15,7 @@ public class Robot {
         physics.init();
         while (true) {
             physics.update();
-            // System.out.println(physics);
+            System.out.println(physics);
 
             try {
                 Thread.sleep(20);
