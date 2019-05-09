@@ -3,7 +3,7 @@ package sim3;
 public class Physics{
 
     double x = 5;
-    double y = 0;
+    double y = 5;
     double heading = 0;
     double distL;
     double distR;
@@ -54,6 +54,7 @@ public class Physics{
         double forceR = calcWheelForce(torqueR);
 
         torqueNet = (forceR - forceL) * Constants.HALF_DIST_BETWEEN_WHEELS; //torque around center of robot
+
         forceNet = forceL + forceR;
 
         angAccel = torqueNet / Constants.ROBOT_ROT_INERTIA;
@@ -61,14 +62,16 @@ public class Physics{
 
         angVelo = angVelo + angAccel * dt;
         linVelo = linVelo + linAccel * dt;
-        veloL = linVelo - Constants.HALF_DIST_BETWEEN_WHEELS * angVelo;
+        veloL = linVelo - Constants.HALF_DIST_BETWEEN_WHEELS * angVelo; //theoretical. untested if this model fits well
         veloR = linVelo + Constants.HALF_DIST_BETWEEN_WHEELS * angVelo;
+
+        
 
         heading = heading + angVelo * dt;
         distL = distL + veloL * dt;
         distR = distR + veloR * dt;
 
-        x = x + linVelo * dt * Math.cos(heading);
+        x = x + linVelo * dt * Math.cos(heading); //mostly for display purposes
         y = y + linVelo * dt * Math.sin(heading);
         lastTime = System.nanoTime();
     }

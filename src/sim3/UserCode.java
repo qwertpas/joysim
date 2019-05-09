@@ -9,11 +9,14 @@ public class UserCode{
 
     public static void execute(){
 
-        double leftPower = Controls.rawY - Controls.rawX;
-        double rightPower = Controls.rawY + Controls.rawX;
+        double x = Controls.rawX * 0.2;
+        double y = Controls.rawY * 1.0;
+
+        double leftPower = y - x;
+        double rightPower = y + x;
         
-        Robot.leftMotor.setVoltage(leftPower);
-        Robot.rightMotor.setVoltage(rightPower);
+        Robot.leftMotor.setVoltage(leftPower*12);
+        Robot.rightMotor.setVoltage(rightPower*12);
         
     }
 

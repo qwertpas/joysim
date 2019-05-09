@@ -14,8 +14,10 @@ public class Motor{
     private double torqueSlope;
 
     //may change throughout operation
-    private Boolean isStalled;
-    private double voltage;
+    public Boolean isStalled;
+    public double voltage;
+    public double angVelocity; //ungeared
+    public double torque; //ungeared
     
     public Motor(double gearing_input, Motor.Model motorModel_input, int numMotors_input){
         gearing = gearing_input;
@@ -40,7 +42,8 @@ public class Motor{
     }
 
     public double calcUngearedTorque(double ungearedAngVelocity){
-        double torque = torqueSlope * Math.copySign(1, voltage) * ungearedAngVelocity + stallTorque; //base torque in direction of voltage
+        angVelocity = ungearedAngVelocity;
+        torque = torqueSlope * Math.copySign(1, voltage) * ungearedAngVelocity + stallTorque; //base torque in direction of voltage
         if(Math.abs(torque) >= stallTorque){
             torque = numMotors * (voltage/12.0) * Math.copySign(stallTorque, torque); //maximum |torque| is stallTorque, apply scaling
             isStalled = true;
@@ -48,6 +51,8 @@ public class Motor{
             torque = numMotors * (voltage/12.0) * torque;
             isStalled = false;
         }
+
+        torque = applyFrictions(torque, ungearedAngVelocity);
         return torque;
     }
 
@@ -58,8 +63,23 @@ public class Motor{
         return gearedTorque;
     }
 
+    private double applyFrictions(double torque, double angVelocity){
+        if(Math.abs(angVelocity) < 0.01 && Math.abs(torque) < Constants.GEAR_STATIC_FRIC){
+            torque = 0;
+        } else {
+            double direction = Math.copySign(1, angVelocity); //either +1 or -1
+            torque = torque - Constants.GEAR_KINE_FRIC*direction;
+        }
+        return torque;
+    }
+
+
+
     public String toString(){
-        return "voltage: " + voltage + ", isStalled: " + isStalled;
+        return "voltage: " + voltage + 
+               ", isStalled: " + isStalled + 
+               ", torque: " + torque + 
+               ", angVelo: " + angVelocity;
     }
     
 
