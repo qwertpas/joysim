@@ -17,13 +17,15 @@ import javax.swing.JPanel;
 
 public class GraphicSim extends JPanel implements MouseListener {
 
-	static Image image;
-	static double screenHeight;
-	static double screenWidth;
+	static Image robotImage;
+	static Image turnCenterImage;
+
+	static int screenHeight;
+	static int screenWidth;
 	static GraphicSim sim;
 
-	static double robotImgHeight;
-	static double robotDisplayWidth;
+	static int robotImgHeight;
+	static int robotDisplayWidth;
 	static double robotScale;
 
 
@@ -37,30 +39,36 @@ public class GraphicSim extends JPanel implements MouseListener {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
+		int x = (int) posModulo(Robot.physics.x * Constants.DISPLAY_SCALE, screenWidth);
+		int y = (int) posModulo(Robot.physics.y * Constants.DISPLAY_SCALE, screenHeight);
 
-
-		double x = (Robot.physics.x * Constants.DISPLAY_SCALE) % screenWidth;
-		double y = (Robot.physics.y * Constants.DISPLAY_SCALE) % screenHeight;
-
-		g.drawString("left torque "+ Robot.leftMotor.torque, 100, 700);
-		g.drawString("right torque "+ Robot.rightMotor.torque, 100, 750);
-		g.drawString(x+" , " + y, 100, 800);
+		g.drawString("left RPM "+ Robot.leftMotor.RPM, 100, 700);
+		g.drawString("right RPM "+ Robot.rightMotor.RPM, 100, 750);
+		g.drawString("linVelo fps" + Util.metersToFeet(Robot.physics.linVelo), 100, 800);
 		
-
-		g2d.rotate(Robot.physics.heading, x, y);
 		g2d.scale(robotScale, robotScale);
-		g.drawImage(image, (int) x, (int) y, this);
+
+		int robotCenterX = x + robotDisplayWidth/2;
+		int robotCenterY = y + robotDisplayWidth/2;
+
+		g2d.rotate(Robot.physics.heading, robotCenterX, robotCenterY);
+
+		// g.drawImage(turnCenterImage, x, y, this);
+
+
+		g.drawImage(robotImage, x, y, this);
     }
     
 	public static void init(){
-		screenWidth = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-		screenHeight = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
-		File file = new File("./robot.png");
+		screenWidth = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+		screenHeight = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 		try {
-			image = ImageIO.read(file);
-			setDisplayScales(file);
-			
+			File robotFile = new File("./robot.png");
+			File turnCenterFile = new File("./turnCenter.png");
 
+			robotImage = ImageIO.read(robotFile);
+			turnCenterImage = ImageIO.read(turnCenterFile);
+			setDisplayScales(robotFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -75,8 +83,14 @@ public class GraphicSim extends JPanel implements MouseListener {
 	private static void setDisplayScales(File file) throws IOException {
 		BufferedImage bufferedImage = ImageIO.read(file);
 		robotImgHeight = bufferedImage.getHeight();
-		robotDisplayWidth = Constants.DISPLAY_SCALE * Constants.ROBOT_WIDTH; //width of robot in pixels
-		robotScale = robotDisplayWidth / robotImgHeight; //scaling robot image to fit display width.
+		robotDisplayWidth = (int) (Constants.DISPLAY_SCALE * Constants.ROBOT_WIDTH); //width of robot in pixels
+		robotScale = (double) robotDisplayWidth / robotImgHeight; //scaling robot image to fit display width.
+	}
+
+	private static double posModulo(double input, double modulo){
+		while(input >= modulo) input -= modulo;
+		while(input < 0) input += modulo;
+		return input;
 	}
 
     public void mousePressed(MouseEvent e) {

@@ -7,7 +7,7 @@ public class Motor{
     }
 
     //only changes on contruction
-    private double gearing;
+    private double gearing; //ratio of output torque to input torque (higher==geared for torque)
     private Motor.Model motorModel;
     private int numMotors;
     private double stallTorque;
@@ -16,8 +16,8 @@ public class Motor{
     //may change throughout operation
     public Boolean isStalled;
     public double voltage;
-    public double angVelocity; //ungeared
-    public double torque; //ungeared
+    public double RPM; //ungeared angular velocity in rotations per minute
+    public double torque; //ungeared in newton*meters
     
     public Motor(double gearing_input, Motor.Model motorModel_input, int numMotors_input){
         gearing = gearing_input;
@@ -41,9 +41,9 @@ public class Motor{
         voltage = voltage_input;
     }
 
-    public double calcUngearedTorque(double ungearedAngVelocity){
-        angVelocity = ungearedAngVelocity;
-        torque = torqueSlope * Math.copySign(1, voltage) * ungearedAngVelocity + stallTorque; //base torque in direction of voltage
+    public double calcUngearedTorque(double ungearedAngVelocityRad){ //input is radians per second
+        RPM = Util.radSecToRPM(ungearedAngVelocityRad);
+        torque = torqueSlope * Math.copySign(1, voltage) * RPM + stallTorque; //base torque in direction of voltage
         if(Math.abs(torque) >= stallTorque){
             torque = numMotors * (voltage/12.0) * Math.copySign(stallTorque, torque); //maximum |torque| is stallTorque, apply scaling
             isStalled = true;
@@ -52,7 +52,8 @@ public class Motor{
             isStalled = false;
         }
 
-        torque = applyFrictions(torque, ungearedAngVelocity);
+        torque = Util.applyFrictions(torque, ungearedAngVelocityRad, 
+                                     Constants.GEAR_STATIC_FRIC, Constants.GEAR_KINE_FRIC, Constants.GEAR_FRIC_THRESHOLD);
         return torque;
     }
 
@@ -63,15 +64,7 @@ public class Motor{
         return gearedTorque;
     }
 
-    private double applyFrictions(double torque, double angVelocity){
-        if(Math.abs(angVelocity) < 0.01 && Math.abs(torque) < Constants.GEAR_STATIC_FRIC){
-            torque = 0;
-        } else {
-            double direction = Math.copySign(1, angVelocity); //either +1 or -1
-            torque = torque - Constants.GEAR_KINE_FRIC*direction;
-        }
-        return torque;
-    }
+    
 
 
 
@@ -79,7 +72,7 @@ public class Motor{
         return "voltage: " + voltage + 
                ", isStalled: " + isStalled + 
                ", torque: " + torque + 
-               ", angVelo: " + angVelocity;
+               ", RPM: " + RPM;
     }
     
 

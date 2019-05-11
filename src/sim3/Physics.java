@@ -26,14 +26,7 @@ public class Physics{
     Boolean slipping = false;
 
 
-    double calcWheelForce(double torque){
-        double force = torque / Constants.WHEEL_RADIUS;
-        if(force > Constants.STATIC_FRIC * 0.5){
-            force = Constants.KINE_FRIC;
-            slipping = true;
-        } else slipping = false;
-        return force;
-    }
+    
 
     public void init(){
         lastTime = System.nanoTime();
@@ -42,10 +35,7 @@ public class Physics{
     }
 
     public void update(){
-        double dt = (System.nanoTime() - lastTime) / 1e+9; //change in time (seconds)
-
-        // Robot.leftMotor.setVoltage(0);
-        // Robot.rightMotor.setVoltage(1);
+        double dt = (System.nanoTime() - lastTime) / 1e+9; //change in time (seconds) used for integrating
 
         torqueL = Robot.leftMotor.calcGearedTorque(veloL / Constants.WHEEL_RADIUS);
         torqueR = Robot.rightMotor.calcGearedTorque(veloR / Constants.WHEEL_RADIUS);
@@ -53,28 +43,47 @@ public class Physics{
         double forceL = calcWheelForce(torqueL);
         double forceR = calcWheelForce(torqueR);
 
-        torqueNet = (forceR - forceL) * Constants.HALF_DIST_BETWEEN_WHEELS; //torque around center of robot
+        torqueNet = calcTorqueNet(forceL, forceR); //newton*meters
+        forceNet = forceL + forceR; //newtons
 
-        forceNet = forceL + forceR;
-
-        angAccel = torqueNet / Constants.ROBOT_ROT_INERTIA;
-        linAccel = forceNet / Constants.ROBOT_MASS;
+        angAccel = torqueNet / Constants.ROBOT_ROT_INERTIA; //rad per sec per sec
+        linAccel = forceNet / Constants.ROBOT_MASS; //meters per sec per sec
 
         angVelo = angVelo + angAccel * dt;
         linVelo = linVelo + linAccel * dt;
-        veloL = linVelo - Constants.HALF_DIST_BETWEEN_WHEELS * angVelo; //theoretical. untested if this model fits well
+        veloL = linVelo - Constants.HALF_DIST_BETWEEN_WHEELS * angVelo; //theoretical. untested if this model works
         veloR = linVelo + Constants.HALF_DIST_BETWEEN_WHEELS * angVelo;
 
         
 
-        heading = heading + angVelo * dt;
-        distL = distL + veloL * dt;
-        distR = distR + veloR * dt;
+        heading = heading + angVelo * dt; //integrating angVelo using physics equation
+        distL = distL + veloL * dt; //integrating veloL using physics equation. distL used as encoder value
+        distR = distR + veloR * dt; //integrating veloR using physics equation. distR used as encoder value
 
-        x = x + linVelo * dt * Math.cos(heading); //mostly for display purposes
+        x = x + linVelo * dt * Math.cos(heading); //for display purposes
         y = y + linVelo * dt * Math.sin(heading);
         lastTime = System.nanoTime();
     }
+
+
+    private double calcWheelForce(double torque){
+        double force = torque / Constants.WHEEL_RADIUS;
+        if(force > Constants.STATIC_FRIC * 0.5){
+            force = Constants.KINE_FRIC;
+            slipping = true;
+        } else slipping = false;
+        return force;
+    }
+
+    private double calcTorqueNet(double forceL, double forceR){
+        double torqueMotors = (forceR - forceL) * Constants.HALF_DIST_BETWEEN_WHEELS; //torque around center of robot
+        //apply scrub
+        torqueNet = Util.applyFrictions(torqueMotors, angVelo, Constants.WHEEL_SCRUB_STATIC, Constants.WHEEL_SCRUB_KINE, Constants.WHEEL_SCRUB_FRIC_THRESHOLD);
+        return torqueNet;
+    }
+
+
+    
 
     public String toString(){
         return x +" "+ y +" "+ heading +" "+ linVelo +" "+ angVelo +" "+ linAccel +" "+ angAccel;

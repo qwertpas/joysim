@@ -6,8 +6,8 @@ package sim3;
 public class Robot {
 
 
-    public static Motor leftMotor = new Motor(20, Motor.Model.CIM, 1);
-    public static Motor rightMotor = new Motor(20, Motor.Model.CIM, 1);
+    public static Motor leftMotor = new Motor(Constants.GEAR_RATIO, Motor.Model.CIM, Constants.MOTORS_PER_SIDE);
+    public static Motor rightMotor = new Motor(Constants.GEAR_RATIO, Motor.Model.CIM, Constants.MOTORS_PER_SIDE);
     public static Physics physics = new Physics();
 
     public static void main(String[] args) {
@@ -21,7 +21,7 @@ public class Robot {
 
             Controls.updateControls();
             physics.update();
-            System.out.println(Controls.rawX + " " + Controls.rawY);
+            if(Constants.printPowers) System.out.println(Controls.rawX + " " + Controls.rawY);
             GraphicSim.sim.repaint();
 
             try {
@@ -56,5 +56,11 @@ public class Robot {
             exit = true;
         }
     } //END of UserCodeThread
+
+
+    public static void setDrivePowers(double leftPower, double rightPower){
+        Robot.leftMotor.setVoltage(leftPower*12);
+        Robot.rightMotor.setVoltage(rightPower*12);
+    }
 
 }
