@@ -14,7 +14,8 @@ public class Robot {
         Controls.searchForControllers();
         physics.init();
         GraphicSim.init();
-        
+
+        new GraphicInput().setVisible(true);
         new UserCodeThread();
 
         while (true) {

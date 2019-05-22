@@ -1,6 +1,15 @@
 package sim3;
 
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+
+
+
 public class Constants{
+
+    enum Type{
+        BOOLEAN, INT, DOUBLE, STRING;
+    }
 
     /** ////////////////////////////////////////////
      * DISPLAY PREFERENCES
@@ -11,27 +20,27 @@ public class Constants{
     /** ////////////////////////////////////////////
      * REAL PHYSICAL CONSTANTS (meters, kilograms, seconds) that come from GraphicInput
      * //////////////////////////////////////////// */ 
-    static Constant GEAR_RATIO = new Constant("GEAR_RATIO", 8);
-    static Constant MOTORS_PER_SIDE = new Constant("MOTORS_PER_SIDE", 2);
+    static Constant GEAR_RATIO = new Constant("GEAR_RATIO", 8, Type.DOUBLE);
+    static Constant MOTORS_PER_SIDE = new Constant("MOTORS_PER_SIDE", 2, Type.INT);
 
-    static Constant ROBOT_MASS = new Constant("ROBOT_MASS", 45.3592);
-    static Constant ROBOT_WIDTH = new Constant("ROBOT_WIDTH", 0.6096);
-    static Constant DIST_BETWEEN_WHEELS = new Constant("DIST_BETWEEN_WHEELS", 0.508);
-    static Constant WHEEL_RADIUS = new Constant("WHEEL_RADIUS", 0.0762);
-    static Constant STATIC_FRIC_COEFF = new Constant("STATIC_FRIC_COEFF", 1.1); //between wheels and ground
-    static Constant KINE_FRIC_COEFF = new Constant("KINE_FRIC_COEFF", 0.7); //should be < static
+    static Constant ROBOT_MASS = new Constant("ROBOT_MASS", 45.3592, Type.DOUBLE);
+    static Constant ROBOT_WIDTH = new Constant("ROBOT_WIDTH", 0.6096, Type.DOUBLE);
+    static Constant DIST_BETWEEN_WHEELS = new Constant("DIST_BETWEEN_WHEELS", 0.508, Type.DOUBLE);
+    static Constant WHEEL_RADIUS = new Constant("WHEEL_RADIUS", 0.0762, Type.DOUBLE);
+    static Constant STATIC_FRIC_COEFF = new Constant("STATIC_FRIC_COEFF", 1.1, Type.DOUBLE); //between wheels and ground
+    static Constant KINE_FRIC_COEFF = new Constant("KINE_FRIC_COEFF", 0.7, Type.DOUBLE); //should be < static
 
     //Overall makes motors slower
-    static Constant GEAR_STATIC_FRIC = new Constant("GEAR_STATIC_FRIC", 2); //actual torque against gearbox when not moving, not the coefficient 
-    static Constant GEAR_KINE_FRIC = new Constant("GEAR_KINE_FRIC", 0.5); //actual torque against gearbox when not moving, not the coefficient 
-    static Constant GEAR_FRIC_THRESHOLD = new Constant("GEAR_FRIC_THRESHOLD", 0.01); //lowest motor speed in rad/sec considered as 'moving' to kine fric
+    static Constant GEAR_STATIC_FRIC = new Constant("GEAR_STATIC_FRIC", 2, Type.DOUBLE); //actual torque against gearbox when not moving, not the coefficient 
+    static Constant GEAR_KINE_FRIC = new Constant("GEAR_KINE_FRIC", 0.5, Type.DOUBLE); //actual torque against gearbox when not moving, not the coefficient 
+    static Constant GEAR_FRIC_THRESHOLD = new Constant("GEAR_FRIC_THRESHOLD", 0.01, Type.DOUBLE); //lowest motor speed in rad/sec considered as 'moving' to kine fric
 
     // Wheel scrub torque slows turning, coeff is a combo of fric coeff, drop center, robot length.
-    static Constant WHEEL_SCRUB_STATIC_COEFF = new Constant("WHEEL_SCRUB_STATIC_COEFF", 0.02); 
-    static Constant WHEEL_SCRUB_KINE_COEFF = new Constant("WHEEL_SCRUB_KINE_COEFF", 0.01); 
-    static Constant WHEEL_SCRUB_FRIC_THRESHOLD = new Constant("WHEEL_SCRUB_FRIC_THRESHOLD", 0.01); //lowest robot rad/sec considered as 'moving' to kine fric
+    static Constant WHEEL_SCRUB_STATIC_COEFF = new Constant("WHEEL_SCRUB_STATIC_COEFF", 0.02, Type.DOUBLE); 
+    static Constant WHEEL_SCRUB_KINE_COEFF = new Constant("WHEEL_SCRUB_KINE_COEFF", 0.01, Type.DOUBLE); 
+    static Constant WHEEL_SCRUB_FRIC_THRESHOLD = new Constant("WHEEL_SCRUB_FRIC_THRESHOLD", 0.01, Type.DOUBLE); //lowest robot rad/sec considered as 'moving' to kine fric
 
-    static Constant GRAV_ACCEL = new Constant("GRAV_ACCEL", 9.81);
+    static Constant GRAV_ACCEL = new Constant("GRAV_ACCEL", 9.81, Type.DOUBLE);
 
     // static Constant CIM_STALL_TORQUE = new Constant("CIM_STALL_TORQUE", 2.413);
     static double CIM_STALL_TORQUE = 2.413;
@@ -41,10 +50,11 @@ public class Constants{
     static double REDLINE_STALL_TORQUE = 0.7080;
     static double REDLINE_TORQUE_SLOPE = -3.779e-05;
 
-    static Constant CONTROLLER_INDEX = new Constant("Controller_INDEX", 0); //which joystick?
+    static Constant CONTROLLER_INDEX = new Constant("Controller_INDEX", 0, Type.INT); //which joystick?
 
-    static Constant DISPLAY_SCALE = new Constant("DISPLAY_SCALE", 100); //in pixels per meter
+    static Constant DISPLAY_SCALE = new Constant("DISPLAY_SCALE", 100, Type.DOUBLE); //in pixels per meter
 
+    //constants that are editable by GraphicInput
     static Constant[] constants = {GEAR_RATIO, 
                                    MOTORS_PER_SIDE, 
                                    ROBOT_MASS, 
@@ -81,14 +91,28 @@ public class Constants{
 
 
     public static class Constant{
+
+        
         private String name;
         private Object value;
-        Constant(String name_input, Object value_input){
+        
+        Type type;
+        
+        JLabel label;
+        JTextField field;
+
+
+        Constant(String name_input, Object value_input, Type type_input){
             name = name_input;
             value = value_input;
+            type = type_input;
+
+            
+            label = new JLabel(name);
+            field = new JTextField(String.valueOf(value));
         }
         
-        public String getName() {
+        public String getValue() {
             return name;
         }
         
@@ -112,8 +136,8 @@ public class Constants{
             this.name = name;
         }
         
-        public void setValue(double value) {
-            this.value = value;
+        public void setValue(Object value_input) {
+            this.value = value_input;
         }
     }
 

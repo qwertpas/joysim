@@ -13,75 +13,44 @@ import java.util.ArrayList;
  *  * @author www.codejava.net  
  */
 public class GraphicInput extends JFrame implements ActionListener {
-    JPanel panel;
 
-    JLabel labelQuestion;
-    JLabel labelWeight;
-    JTextField fieldWeight;
-    JButton buttonSave;
+    JPanel panel = new JPanel();
+    JScrollPane scrollPane = new JScrollPane(panel);
+    JButton buttonSave = new JButton("Save");
+
     
     public GraphicInput() {
         super("Input");
-        panel = new JPanel();
-        setPreferredSize(new Dimension(200, 2000));
-        JScrollPane scrollPane = new JScrollPane(panel);
-        add(scrollPane);
-        setSize(240, 150);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         initComponents();
+        setSize(250, 790);
     }
 
     private void initComponents() {
-        labelQuestion = new JLabel("How much water should I drink?");
-        labelWeight = new JLabel("My weight (kg):");
+        add(scrollPane);
 
-        JLabel[] labels = {
-            new JLabel("GEAR_RATIO"),
-            new JLabel("MOTORS_PER_SIDE"),
-            new JLabel("ROBOT_MASS")
-        };
-        ArrayList<JTextField> fields = new ArrayList<JTextField>();
-
-
-        for(JLabel label : labels){
-            add(label);
-            
-
-            
-            new JTextField(5);
-            fieldWeight.setMaximumSize(new Dimension(Integer.MAX_VALUE, fieldWeight.getPreferredScrollableViewportSize().height));
-            add(fieldWeight);
+        for(Constant constant : Constants.constants){
+            panel.add(constant.label);
+            constant.field.setMaximumSize(new Dimension(200, constant.field.getPreferredScrollableViewportSize().height));
+            panel.add(constant.field);
         }
-        
-        
 
-        buttonSave = new JButton("Tell Me");
-
-        setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));
-
-        add(labelQuestion);
-        add(labelWeight);
-        add(fieldWeight);
-        add(new JLabel("something after the box"));
-        add(buttonSave);
-        
+        panel.add(buttonSave);
         buttonSave.addActionListener(this);
     }
     
     public void actionPerformed(ActionEvent event) {
-        // Constants.ROBOT_MASS.SE = Double.parseDouble(fieldWeight.getText());
+        for(Constant constant : Constants.constants){
+            Object obj = constant.field.getText();
+            constant.setValue(obj);
+        }
+        System.out.println("Saved");
     }
 
     
 
-    public static void main(String[] args) {
-        // new GraphicInput().setVisible(true);
-        for(Constant constant : Constants.constants){
-            try{
-                System.out.println(constant.getName() + " : " + constant.getObject());
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-        }
+    public static void main(String[] args) { //for testing solely the GraphicInput class
+        new GraphicInput().setVisible(true);
     }
 }
