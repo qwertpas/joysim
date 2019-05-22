@@ -39,7 +39,7 @@ public class Controls {
 		if (usingMouse) {
 			getMouseData();
 		} else {
-            getControllerData(foundControllers.get(Constants.CONTROLLER_INDEX));
+            getControllerData(foundControllers.get(Constants.CONTROLLER_INDEX.getInt()));
         }
     }
     

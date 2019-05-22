@@ -39,8 +39,8 @@ public class GraphicSim extends JPanel implements MouseListener {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-		int x = (int) posModulo(Robot.physics.x * Constants.DISPLAY_SCALE, screenWidth);
-		int y = (int) posModulo(Robot.physics.y * Constants.DISPLAY_SCALE, screenHeight);
+		int x = (int) posModulo(Robot.physics.x * Constants.DISPLAY_SCALE.getDouble(), screenWidth);
+		int y = (int) posModulo(Robot.physics.y * Constants.DISPLAY_SCALE.getDouble(), screenHeight);
 
 		g.drawString("left RPM "+ Robot.leftMotor.RPM, 100, 700);
 		g.drawString("right RPM "+ Robot.rightMotor.RPM, 100, 750);
@@ -83,7 +83,7 @@ public class GraphicSim extends JPanel implements MouseListener {
 	private static void setDisplayScales(File file) throws IOException {
 		BufferedImage bufferedImage = ImageIO.read(file);
 		robotImgHeight = bufferedImage.getHeight();
-		robotDisplayWidth = (int) (Constants.DISPLAY_SCALE * Constants.ROBOT_WIDTH); //width of robot in pixels
+		robotDisplayWidth = (int) (Constants.DISPLAY_SCALE.getDouble() * Constants.ROBOT_WIDTH.getDouble()); //width of robot in pixels
 		robotScale = (double) robotDisplayWidth / robotImgHeight; //scaling robot image to fit display width.
 	}
 

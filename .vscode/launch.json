@@ -2,6 +2,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - te",
+            "request": "launch",
+            "mainClass": "sim3.te",
+            "projectName": "joysim"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - GraphicInput",
+            "request": "launch",
+            "mainClass": "sim3.GraphicInput",
+            "projectName": "joysim"
+        },
+        {
+            "type": "java",
             "name": "CodeLens (Launch) - Robot",
             "request": "launch",
             "mainClass": "sim3.Robot",

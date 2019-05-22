@@ -37,8 +37,8 @@ public class Physics{
     public void update(){
         double dt = (System.nanoTime() - lastTime) / 1e+9; //change in time (seconds) used for integrating
 
-        torqueL = Robot.leftMotor.calcGearedTorque(veloL / Constants.WHEEL_RADIUS);
-        torqueR = Robot.rightMotor.calcGearedTorque(veloR / Constants.WHEEL_RADIUS);
+        torqueL = Robot.leftMotor.calcGearedTorque(veloL / Constants.WHEEL_RADIUS.getDouble());
+        torqueR = Robot.rightMotor.calcGearedTorque(veloR / Constants.WHEEL_RADIUS.getDouble());
 
         double forceL = calcWheelForce(torqueL);
         double forceR = calcWheelForce(torqueR);
@@ -47,7 +47,7 @@ public class Physics{
         forceNet = forceL + forceR; //newtons
 
         angAccel = torqueNet / Constants.ROBOT_ROT_INERTIA; //rad per sec per sec
-        linAccel = forceNet / Constants.ROBOT_MASS; //meters per sec per sec
+        linAccel = forceNet / Constants.ROBOT_MASS.getDouble(); //meters per sec per sec
 
         angVelo = angVelo + angAccel * dt;
         linVelo = linVelo + linAccel * dt;
@@ -67,7 +67,7 @@ public class Physics{
 
 
     private double calcWheelForce(double torque){
-        double force = torque / Constants.WHEEL_RADIUS;
+        double force = torque / Constants.WHEEL_RADIUS.getDouble();
         if(force > Constants.STATIC_FRIC * 0.5){
             force = Constants.KINE_FRIC;
             slipping = true;
@@ -78,7 +78,7 @@ public class Physics{
     private double calcTorqueNet(double forceL, double forceR){
         double torqueMotors = (forceR - forceL) * Constants.HALF_DIST_BETWEEN_WHEELS; //torque around center of robot
         //apply scrub
-        torqueNet = Util.applyFrictions(torqueMotors, angVelo, Constants.WHEEL_SCRUB_STATIC, Constants.WHEEL_SCRUB_KINE, Constants.WHEEL_SCRUB_FRIC_THRESHOLD);
+        torqueNet = Util.applyFrictions(torqueMotors, angVelo, Constants.WHEEL_SCRUB_STATIC, Constants.WHEEL_SCRUB_KINE, Constants.WHEEL_SCRUB_FRIC_THRESHOLD.getDouble());
         return torqueNet;
     }
 

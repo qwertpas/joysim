@@ -53,7 +53,9 @@ public class Motor{
         }
 
         torque = Util.applyFrictions(torque, ungearedAngVelocityRad, 
-                                     Constants.GEAR_STATIC_FRIC, Constants.GEAR_KINE_FRIC, Constants.GEAR_FRIC_THRESHOLD);
+                                     Constants.GEAR_STATIC_FRIC.getDouble(), 
+                                     Constants.GEAR_KINE_FRIC.getDouble(), 
+                                     Constants.GEAR_FRIC_THRESHOLD.getDouble());
         return torque;
     }
 

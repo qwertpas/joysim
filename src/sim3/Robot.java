@@ -6,8 +6,8 @@ package sim3;
 public class Robot {
 
 
-    public static Motor leftMotor = new Motor(Constants.GEAR_RATIO, Motor.Model.CIM, Constants.MOTORS_PER_SIDE);
-    public static Motor rightMotor = new Motor(Constants.GEAR_RATIO, Motor.Model.CIM, Constants.MOTORS_PER_SIDE);
+    public static Motor leftMotor = new Motor(Constants.GEAR_RATIO.getDouble(), Motor.Model.CIM, Constants.MOTORS_PER_SIDE.getInt());
+    public static Motor rightMotor = new Motor(Constants.GEAR_RATIO.getDouble(), Motor.Model.CIM, Constants.MOTORS_PER_SIDE.getInt());
     public static Physics physics = new Physics();
 
     public static void main(String[] args) {
