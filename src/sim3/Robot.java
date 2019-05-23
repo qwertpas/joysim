@@ -5,6 +5,7 @@ package sim3;
 
 public class Robot {
 
+    public static Boolean paused = false;
 
     public static Motor leftMotor = new Motor(Constants.GEAR_RATIO.getDouble(), Motor.Model.CIM, Constants.MOTORS_PER_SIDE.getInt());
     public static Motor rightMotor = new Motor(Constants.GEAR_RATIO.getDouble(), Motor.Model.CIM, Constants.MOTORS_PER_SIDE.getInt());
@@ -18,12 +19,16 @@ public class Robot {
         new GraphicInput().setVisible(true);
         new UserCodeThread();
 
+        //TODO: add pause button
         while (true) {
 
-            Controls.updateControls();
-            physics.update();
-            if(Constants.printPowers) System.out.println(Controls.rawX + " " + Controls.rawY);
-            GraphicSim.sim.repaint();
+            while(!paused){
+                Controls.updateControls();
+                physics.update();
+                if(Constants.printPowers) System.out.println(Controls.rawX + " " + Controls.rawY);
+                GraphicSim.sim.repaint();
+            }
+
 
             try {
                 Thread.sleep(1);

@@ -14,7 +14,6 @@ public class Physics{
     double linAccel = 0.1;
     double angAccel = 0;
 
-    long lastTime;
 
     double veloL = 0;
     double veloR = 0;
@@ -25,6 +24,8 @@ public class Physics{
     double forceNet;
     Boolean slipping = false;
 
+    static double dt;
+    static double lastTime;
 
     
 
@@ -35,7 +36,8 @@ public class Physics{
     }
 
     public void update(){
-        double dt = (System.nanoTime() - lastTime) / 1e+9; //change in time (seconds) used for integrating
+        dt = (System.nanoTime() - lastTime) / 1e+9; //change in time (seconds) used for integrating
+        
 
         torqueL = Robot.leftMotor.calcGearedTorque(veloL / Constants.WHEEL_RADIUS.getDouble());
         torqueR = Robot.rightMotor.calcGearedTorque(veloR / Constants.WHEEL_RADIUS.getDouble());
