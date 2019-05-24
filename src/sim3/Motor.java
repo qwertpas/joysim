@@ -18,6 +18,7 @@ public class Motor{
     public double voltage;
     public double RPM; //ungeared angular velocity in rotations per minute
     public double torque; //ungeared in newton*meters
+    public double distance; //integrating angular velocity then using wheel circumference, convert to inches
     
     public Motor(double gearing_input, Motor.Model motorModel_input, int numMotors_input){
         gearing = gearing_input;
@@ -41,9 +42,17 @@ public class Motor{
         voltage = voltage_input;
     }
 
+    public void integrateVelocity(){
+        double radPerSec = Util.rpmToRadSec(RPM);
+        double changeInAngle = radPerSec * Physics.dt; //change in the angle(radians) of the wheel in 1 update cycle
+        distance += Util.metersToInches(changeInAngle * Constants.WHEEL_RADIUS.getDouble()); // arclength == angle * radius
+    }
+
     public double calcUngearedTorque(double ungearedAngVelocityRad){ //input is radians per second
         RPM = Util.radSecToRPM(ungearedAngVelocityRad);
-        torque = torqueSlope * Math.copySign(1, voltage) * RPM + stallTorque; //base torque in direction of voltage
+        integrateVelocity();
+
+        torque = torqueSlope * Math.copySign(1, voltage) * RPM + stallTorque; //base torque in direction of voltage based on motor chart
         if(Math.abs(torque) >= stallTorque){
             torque = numMotors * (voltage/12.0) * Math.copySign(stallTorque, torque); //maximum |torque| is stallTorque, apply scaling
             isStalled = true;
@@ -66,7 +75,19 @@ public class Motor{
         return gearedTorque;
     }
 
-    
+    /**
+     * @return distance in inches rounded to hundreths place
+     */
+    public double getDistance() {
+        return Util.round(distance, 0.01);
+    }
+
+    /**
+     * @return RPM rounded to hundreths place
+     */
+    public double getRPM() {
+        return Util.round(RPM, 0.01);
+    }
 
 
 

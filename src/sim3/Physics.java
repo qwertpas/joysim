@@ -5,15 +5,12 @@ public class Physics{
     double x = 5;
     double y = 5;
     double heading = 0;
-    double distL;
-    double distR;
 
     double linVelo = 0;
     double angVelo = 0;
 
     double linAccel = 0.1;
     double angAccel = 0;
-
 
     double veloL = 0;
     double veloR = 0;
@@ -56,11 +53,7 @@ public class Physics{
         veloL = linVelo - Constants.HALF_DIST_BETWEEN_WHEELS * angVelo; //theoretical. untested if this model works
         veloR = linVelo + Constants.HALF_DIST_BETWEEN_WHEELS * angVelo;
 
-        
-
         heading = heading + angVelo * dt; //integrating angVelo using physics equation
-        distL = distL + veloL * dt; //integrating veloL using physics equation. distL used as encoder value
-        distR = distR + veloR * dt; //integrating veloR using physics equation. distR used as encoder value
 
         x = x + linVelo * dt * Math.cos(heading); //for display purposes
         y = y + linVelo * dt * Math.sin(heading);

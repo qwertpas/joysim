@@ -77,6 +77,9 @@ public class Constants{
     /** ////////////////////////////////
      * CALCULATED FROM REAL CONSTANTS
      * //////////////////////////////// */     
+    
+    
+    
     static double HALF_DIST_BETWEEN_WHEELS = DIST_BETWEEN_WHEELS.getDouble() / 2.0;
     static double STATIC_FRIC = ROBOT_MASS.getDouble() * GRAV_ACCEL.getDouble() * STATIC_FRIC_COEFF.getDouble();
     static double KINE_FRIC = ROBOT_MASS.getDouble() * GRAV_ACCEL.getDouble() * KINE_FRIC_COEFF.getDouble();
@@ -88,11 +91,19 @@ public class Constants{
     // static double ROBOT_ROT_INERTIA = 2;
     //https://en.wikipedia.org/wiki/List_of_moments_of_inertia
 
+    static void calcConstants(){
+        HALF_DIST_BETWEEN_WHEELS = DIST_BETWEEN_WHEELS.getDouble() / 2.0;
+        STATIC_FRIC = ROBOT_MASS.getDouble() * GRAV_ACCEL.getDouble() * STATIC_FRIC_COEFF.getDouble();
+        KINE_FRIC = ROBOT_MASS.getDouble() * GRAV_ACCEL.getDouble() * KINE_FRIC_COEFF.getDouble();
+
+        WHEEL_SCRUB_STATIC = ROBOT_MASS.getDouble() * GRAV_ACCEL.getDouble() * WHEEL_SCRUB_STATIC_COEFF.getDouble(); //is a torque
+        WHEEL_SCRUB_KINE = ROBOT_MASS.getDouble() * GRAV_ACCEL.getDouble() * WHEEL_SCRUB_KINE_COEFF.getDouble(); //is a torque
+
+        ROBOT_ROT_INERTIA = (1.0/6.0) * ROBOT_MASS.getDouble() * ROBOT_WIDTH.getDouble() * ROBOT_WIDTH.getDouble();
+    }
 
 
     public static class Constant{
-
-        
         private String name;
         private Object value;
         
@@ -106,7 +117,6 @@ public class Constants{
             name = name_input;
             value = value_input;
             type = type_input;
-
             
             label = new JLabel(name);
             field = new JTextField(String.valueOf(value));

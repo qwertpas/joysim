@@ -19,7 +19,6 @@ public class Robot {
         new GraphicInput().setVisible(true);
         new UserCodeThread();
 
-        //TODO: add pause button
         while (true) {
 
             while(!paused){
@@ -51,7 +50,9 @@ public class Robot {
         public void run(){
             UserCode.initialize();
             while(!exit) {
-                UserCode.execute();
+                if(!paused){
+                    UserCode.execute();
+                }
                 try {
                     Thread.sleep(20); //20 millisecond delay or 50 times a second
                 } catch (InterruptedException e) {}

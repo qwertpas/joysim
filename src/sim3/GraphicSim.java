@@ -35,6 +35,8 @@ public class GraphicSim extends JPanel implements MouseListener {
 
     @Override
 	public void paint(Graphics g) { //gets called iteratively by JFrame
+		screenWidth = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+		screenHeight = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -42,8 +44,8 @@ public class GraphicSim extends JPanel implements MouseListener {
 		int x = (int) posModulo(Robot.physics.x * Constants.DISPLAY_SCALE.getDouble(), screenWidth);
 		int y = (int) posModulo(Robot.physics.y * Constants.DISPLAY_SCALE.getDouble(), screenHeight);
 
-		g.drawString("left RPM "+ Robot.leftMotor.RPM, 500, 700);
-		g.drawString("right RPM "+ Robot.rightMotor.RPM, 500, 750);
+		g.drawString("left RPM "+ Robot.leftMotor.getDistance(), 500, 700);
+		g.drawString("right RPM "+ Robot.rightMotor.getDistance(), 500, 750);
 		g.drawString("linVelo fps" + Util.metersToFeet(Robot.physics.linVelo), 500, 800);
 		
 		g2d.scale(robotScale, robotScale);

@@ -51,6 +51,7 @@ public class GraphicInput extends JFrame implements ActionListener {
                 Object obj = constant.field.getText();
                 constant.setValue(obj);
             }
+            Constants.calcConstants();
             System.out.println("Saved");
         }
         if(event.getSource() == buttonPause){

@@ -28,6 +28,13 @@ public class Util{
         return meters * 3.281;
     }
 
+    public static double metersToInches(double meters){
+        return meters * 39.3701;
+    }
+
+    public static double round(double input, double decimal_place){
+        return Math.round(input / (double) decimal_place) * decimal_place;
+    }
 
 
 
