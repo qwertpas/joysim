@@ -1,7 +1,9 @@
 
 package sim3;
 
-public class Util{
+import java.text.DecimalFormat;
+
+public class Util {
 
 
     public static double applyFrictions(double force, double velocity, double STATIC_FRIC, double KINE_FRIC, double FRIC_THRESHOLD){
@@ -32,9 +34,10 @@ public class Util{
         return meters * 39.3701;
     }
 
-    public static double round(double input, double decimal_place){
-        return Math.round(input / (double) decimal_place) * decimal_place;
+    public static double roundHundreths(double input){
+        return Double.parseDouble(new DecimalFormat("#.##").format(input));
     }
+
 
 
 

@@ -52,7 +52,7 @@ public class Constants{
 
     static Constant CONTROLLER_INDEX = new Constant("Controller_INDEX", 0, Type.INT); //which joystick?
 
-    static Constant DISPLAY_SCALE = new Constant("DISPLAY_SCALE", 100, Type.DOUBLE); //in pixels per meter
+    static Constant DISPLAY_SCALE = new Constant("DISPLAY_SCALE", 50, Type.DOUBLE); //in pixels per meter
 
     //constants that are editable by GraphicInput
     static Constant[] constants = {GEAR_RATIO, 

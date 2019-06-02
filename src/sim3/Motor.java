@@ -79,14 +79,14 @@ public class Motor{
      * @return distance in inches rounded to hundreths place
      */
     public double getDistance() {
-        return Util.round(distance, 0.01);
+        return Util.roundHundreths(distance);
     }
 
     /**
      * @return RPM rounded to hundreths place
      */
     public double getRPM() {
-        return Util.round(RPM, 0.01);
+        return Util.roundHundreths(RPM);
     }
 
 

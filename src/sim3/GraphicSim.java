@@ -44,9 +44,16 @@ public class GraphicSim extends JPanel implements MouseListener {
 		int x = (int) posModulo(Robot.physics.x * Constants.DISPLAY_SCALE.getDouble(), screenWidth);
 		int y = (int) posModulo(Robot.physics.y * Constants.DISPLAY_SCALE.getDouble(), screenHeight);
 
-		g.drawString("left RPM "+ Robot.leftMotor.getDistance(), 500, 700);
-		g.drawString("right RPM "+ Robot.rightMotor.getDistance(), 500, 750);
-		g.drawString("linVelo fps" + Util.metersToFeet(Robot.physics.linVelo), 500, 800);
+		g.drawString("left encoder "+ Robot.leftMotor.getDistance(), 500, 700);
+		g.drawString("right encoder "+ Robot.rightMotor.getDistance(), 500, 750);
+		g.drawString("feet per sec" + Util.roundHundreths(Util.metersToFeet(Robot.physics.linVelo)), 500, 800);
+
+		for(int i = 0; i < screenWidth; i += Constants.DISPLAY_SCALE.getDouble()){
+			g.drawLine(i, 0, i, screenHeight);
+		}
+		for(int i = 0; i < screenHeight; i += Constants.DISPLAY_SCALE.getDouble()){
+			g.drawLine(0, i, screenWidth, i);
+		}
 		
 		g2d.scale(robotScale, robotScale);
 
