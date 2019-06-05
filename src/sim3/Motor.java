@@ -46,12 +46,12 @@ public class Motor{
     public void integrateVelocity(){
         double radPerSec = Util.rpmToRadSec(RPM);
         double changeInAngle = radPerSec * Physics.dt; //change in the angle(radians) of the wheel in 1 update cycle
-        distance += Util.metersToInches(changeInAngle * Constants.WHEEL_RADIUS.getDouble()); // arclength == angle * radius
+        distance += Util.metersToInches(changeInAngle * Constants.WHEEL_RADIUS.getDouble())/12.0; // arclength == angle * radius
     }
 
     public double calcUngearedTorque(double ungearedAngVelocityRad){ //input is radians per second
         RPM = Util.radSecToRPM(ungearedAngVelocityRad);
-        integrateVelocity();
+        // integrateVelocity(); doesn't seem to work
 
         torque = torqueSlope * Math.copySign(1, voltage) * RPM + stallTorque; //base torque in direction of voltage based on motor chart
         if(Math.abs(torque) >= stallTorque){

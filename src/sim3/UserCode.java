@@ -15,8 +15,8 @@ public class UserCode{
         // System.out.println(Robot.leftMotor.getDistance());
         // System.out.println(Robot.rightMotor.getDistance());
 
-        double leftPower = y - x;
-        double rightPower = y + x;
+        double leftPower = y + x;
+        double rightPower = y - x;
         
         Robot.setDrivePowers(leftPower, rightPower);
         

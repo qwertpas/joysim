@@ -49,8 +49,10 @@ public class GraphicSim extends JPanel implements MouseListener {
 		int x = (int) posModulo(Robot.physics.x * Constants.DISPLAY_SCALE.getDouble(), windowWidth); // in pixels
 		int y = (int) posModulo(Robot.physics.y * Constants.DISPLAY_SCALE.getDouble(), windowHeight);
 
-		g.drawString("left encoder (in)"+ Robot.leftMotor.getDistance(), 500, 700);
-		g.drawString("right encoder (in) "+ Robot.rightMotor.getDistance(), 500, 750);
+		g.drawString("left encoder (in)"+ Util.metersToInches(Robot.physics.distL), 500, 700);
+		g.drawString("right encoder (in) "+ Util.metersToInches(Robot.physics.distR), 500, 725);
+		g.drawString("left velo"+ Robot.physics.veloL, 500, 750);
+		g.drawString("right velo"+ Robot.physics.veloR, 500, 775);
 		g.drawString("feet per sec" + Util.roundHundreths(Util.metersToFeet(Robot.physics.linVelo)), 500, 800);
 
 		//drawing the grid
