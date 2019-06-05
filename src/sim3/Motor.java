@@ -6,10 +6,11 @@ public class Motor{
         CIM, miniCIM, Redline
     }
 
-    //only changes on contruction
+    //only changes during contruction or graphicinput save
     private double gearing; //ratio of output torque to input torque (higher==geared for torque)
     private Motor.Model motorModel;
     private int numMotors;
+
     private double stallTorque;
     private double torqueSlope;
 
@@ -74,6 +75,35 @@ public class Motor{
         double gearedTorque = ungearedTorque * gearing;
         return gearedTorque;
     }
+
+
+    public void updateMotorConfig(){
+        gearing = Constants.GEAR_RATIO.getDouble();
+        numMotors = Constants.MOTORS_PER_SIDE.getInt();
+    }
+
+
+    /**
+     * @param numMotors the numMotors to set
+     */
+    public void setNumMotors(int numMotors) {
+        this.numMotors = numMotors;
+    }
+
+    /**
+     * @param gearing the gearing to set
+     */
+    public void setGearing(double gearing) {
+        this.gearing = gearing;
+    }
+
+    /**
+     * @param motorModel the motorModel to set
+     */
+    public void setMotorModel(Motor.Model motorModel) {
+        this.motorModel = motorModel;
+    }
+
 
     /**
      * @return distance in inches rounded to hundreths place

@@ -1,6 +1,9 @@
 package sim3;
 
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 
@@ -10,6 +13,8 @@ public class Constants{
     enum Type{
         BOOLEAN, INT, DOUBLE, STRING;
     }
+
+    JPanel panel = new JPanel();
 
     /** ////////////////////////////////////////////
      * DISPLAY PREFERENCES
@@ -31,12 +36,12 @@ public class Constants{
     static Constant KINE_FRIC_COEFF = new Constant("KINE_FRIC_COEFF", 0.7, Type.DOUBLE); //should be < static
 
     //Overall makes motors slower
-    static Constant GEAR_STATIC_FRIC = new Constant("GEAR_STATIC_FRIC", 2, Type.DOUBLE); //actual torque against gearbox when not moving, not the coefficient 
+    static Constant GEAR_STATIC_FRIC = new Constant("GEAR_STATIC_FRIC", 0.9, Type.DOUBLE); //actual torque against gearbox when not moving, not the coefficient 
     static Constant GEAR_KINE_FRIC = new Constant("GEAR_KINE_FRIC", 0.5, Type.DOUBLE); //actual torque against gearbox when not moving, not the coefficient 
     static Constant GEAR_FRIC_THRESHOLD = new Constant("GEAR_FRIC_THRESHOLD", 0.01, Type.DOUBLE); //lowest motor speed in rad/sec considered as 'moving' to kine fric
 
     // Wheel scrub torque slows turning, coeff is a combo of fric coeff, drop center, robot length.
-    static Constant WHEEL_SCRUB_STATIC_COEFF = new Constant("WHEEL_SCRUB_STATIC_COEFF", 0.02, Type.DOUBLE); 
+    static Constant WHEEL_SCRUB_STATIC_COEFF = new Constant("WHEEL_SCRUB_STATIC_COEFF", 0.012, Type.DOUBLE); 
     static Constant WHEEL_SCRUB_KINE_COEFF = new Constant("WHEEL_SCRUB_KINE_COEFF", 0.01, Type.DOUBLE); 
     static Constant WHEEL_SCRUB_FRIC_THRESHOLD = new Constant("WHEEL_SCRUB_FRIC_THRESHOLD", 0.01, Type.DOUBLE); //lowest robot rad/sec considered as 'moving' to kine fric
 
@@ -52,7 +57,7 @@ public class Constants{
 
     static Constant CONTROLLER_INDEX = new Constant("Controller_INDEX", 0, Type.INT); //which joystick?
 
-    static Constant DISPLAY_SCALE = new Constant("DISPLAY_SCALE", 50, Type.DOUBLE); //in pixels per meter
+    static Constant DISPLAY_SCALE = new Constant("DISPLAY_SCALE", 100, Type.DOUBLE); //in pixels per meter
 
     //constants that are editable by GraphicInput
     static Constant[] constants = {GEAR_RATIO, 
@@ -102,10 +107,32 @@ public class Constants{
         ROBOT_ROT_INERTIA = (1.0/6.0) * ROBOT_MASS.getDouble() * ROBOT_WIDTH.getDouble() * ROBOT_WIDTH.getDouble();
     }
 
+    static Boolean checkTypes(){
+        Boolean good = true;
+        for(Constant constant : constants){
+            try{
+                if(constant.type.equals(Type.DOUBLE)) constant.getDouble();
+                if(constant.type.equals(Type.INT)) constant.getInt();
+                if(constant.type.equals(Type.STRING)) constant.getString();
+            }catch(IllegalArgumentException e){
+                JOptionPane.showMessageDialog(GraphicInput.panel, constant.name + " must be of type " + constant.type.name());
+                good = false;
+            }
+        }
+        return good;
+    }
+
+    static void setAllToDefault(){
+        for(Constant constant : constants){
+            constant.setValue(constant.defaultValue);
+        }
+    }
+
 
     public static class Constant{
         private String name;
         private Object value;
+        private String defaultValue;
         
         Type type;
         
@@ -116,16 +143,17 @@ public class Constants{
         Constant(String name_input, Object value_input, Type type_input){
             name = name_input;
             value = value_input;
+            defaultValue = String.valueOf(value_input);
             type = type_input;
             
             label = new JLabel(name);
             field = new JTextField(String.valueOf(value));
         }
         
-        public String getValue() {
+        public String getName(){
             return name;
         }
-        
+
         public double getDouble() {
             return Double.valueOf(getString());
         }
@@ -136,6 +164,10 @@ public class Constants{
 
         public String getString() {
             return String.valueOf(value);
+        }
+
+        public String getDefaultString() {
+            return String.valueOf(defaultValue);
         }
 
         public Object getObject(){
@@ -149,6 +181,7 @@ public class Constants{
         public void setValue(Object value_input) {
             this.value = value_input;
         }
+
     }
 
 }

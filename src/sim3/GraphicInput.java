@@ -13,10 +13,10 @@ import java.awt.event.*;
  */
 public class GraphicInput extends JFrame implements ActionListener {
 
-    JPanel panel = new JPanel();
+    static JPanel panel = new JPanel();
     JScrollPane scrollPane = new JScrollPane(panel);
-    JButton buttonSave = new JButton("Save");
-    JButton buttonPause = new JButton("Pause");
+    static JButton buttonSave = new JButton("Save");
+    static JButton buttonPause = new JButton("Pause");
 
     
     public GraphicInput() {
@@ -42,37 +42,62 @@ public class GraphicInput extends JFrame implements ActionListener {
         panel.add(buttonPause);
         buttonSave.addActionListener(this);
         buttonPause.addActionListener(this);
+
+        resume();
     }
     
     public void actionPerformed(ActionEvent event) {
         System.out.println("Button pressed...");
+
         if(event.getSource() == buttonSave){
             for(Constant constant : Constants.constants){
                 Object obj = constant.field.getText();
                 constant.setValue(obj);
             }
-            Constants.calcConstants();
-            System.out.println("Saved");
-        }
-        if(event.getSource() == buttonPause){
-            if(Robot.paused){
-                Robot.paused = false;
-                Physics.dt = 0;
-                Physics.lastTime = System.nanoTime();
-
-                buttonPause.setText("Pause");
-                System.out.println("Resumed");
+            if(Constants.checkTypes()){ //if all the constants inputted are the correct type
+                Constants.calcConstants();
+                GraphicSim.rescale();
+                Robot.leftMotor.updateMotorConfig();
+                Robot.rightMotor.updateMotorConfig();
+                System.out.println("Saved");
             }else{
                 Robot.paused = true;
                 buttonPause.setText("Resume");
-                System.out.println("Paused");
+                System.out.println("Paused: Input type error");
+            }
+        }
+
+        if(event.getSource() == buttonPause){
+            if(Robot.paused){
+                if(Constants.checkTypes()){
+                    resume();
+                }
+            }else{
+                pause();
             }
         }
     }
 
+    public static void pause(){
+        Robot.paused = true;
+        
+        buttonPause.setText("Resume");
+        buttonSave.setEnabled(true);
+        System.out.println("Paused");
+    }
+
+    public static void resume(){
+        Robot.paused = false;
+        Physics.dt = 0;
+        Physics.lastTime = System.nanoTime();
+
+        buttonPause.setText("Pause");
+        buttonSave.setEnabled(false);
+        System.out.println("Resume");
+    }
     
 
-    public static void main(String[] args) { //for testing solely the GraphicInput class
+    public static void main(String[] args) { //for testing solely the GraphicInput class. not run during actual simulation
         new GraphicInput().setVisible(true);
     }
 }

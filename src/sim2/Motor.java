@@ -41,7 +41,7 @@ public class Motor{
 
     public double calcUngearedTorque(double ungearedAngVelocity){
         double torque = torqueSlope * Math.copySign(1, voltage) * ungearedAngVelocity + stallTorque; //base torque in direction of voltage
-        System.out.println(torque);
+        // System.out.println(torque);
         if(Math.abs(torque) >= stallTorque){
             torque = numMotors * (voltage/12.0) * Math.copySign(stallTorque, torque); //maximum |torque| is stallTorque, apply scaling
             isStalled = true;

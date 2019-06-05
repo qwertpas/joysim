@@ -1,5 +1,6 @@
 package sim3;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -17,8 +18,12 @@ import javax.swing.JPanel;
 
 public class GraphicSim extends JPanel implements MouseListener {
 
+	static JFrame frame;
+
+	static File robotFile;
+	// static File turnCenter;
 	static Image robotImage;
-	static Image turnCenterImage;
+	// static Image turnCenterImage;
 
 	static int screenHeight;
 	static int screenWidth;
@@ -35,53 +40,59 @@ public class GraphicSim extends JPanel implements MouseListener {
 
     @Override
 	public void paint(Graphics g) { //gets called iteratively by JFrame
-		screenWidth = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-		screenHeight = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+		double windowWidth = frame.getContentPane().getSize().getWidth();
+		double windowHeight = frame.getContentPane().getSize().getHeight();
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-		int x = (int) posModulo(Robot.physics.x * Constants.DISPLAY_SCALE.getDouble(), screenWidth);
-		int y = (int) posModulo(Robot.physics.y * Constants.DISPLAY_SCALE.getDouble(), screenHeight);
+		int x = (int) posModulo(Robot.physics.x * Constants.DISPLAY_SCALE.getDouble(), windowWidth); // in pixels
+		int y = (int) posModulo(Robot.physics.y * Constants.DISPLAY_SCALE.getDouble(), windowHeight);
 
-		g.drawString("left encoder "+ Robot.leftMotor.getDistance(), 500, 700);
-		g.drawString("right encoder "+ Robot.rightMotor.getDistance(), 500, 750);
+		g.drawString("left encoder (in)"+ Robot.leftMotor.getDistance(), 500, 700);
+		g.drawString("right encoder (in) "+ Robot.rightMotor.getDistance(), 500, 750);
 		g.drawString("feet per sec" + Util.roundHundreths(Util.metersToFeet(Robot.physics.linVelo)), 500, 800);
 
-		for(int i = 0; i < screenWidth; i += Constants.DISPLAY_SCALE.getDouble()){
+		//drawing the grid
+		g.setColor(Color.GRAY.brighter());
+		for(int i = 0; i < screenWidth; i += Constants.DISPLAY_SCALE.getDouble() / Util.metersToFeet(1)){
 			g.drawLine(i, 0, i, screenHeight);
 		}
-		for(int i = 0; i < screenHeight; i += Constants.DISPLAY_SCALE.getDouble()){
+		for(int i = 0; i < screenHeight; i += Constants.DISPLAY_SCALE.getDouble() / Util.metersToFeet(1)){
 			g.drawLine(0, i, screenWidth, i);
 		}
 		
-		g2d.scale(robotScale, robotScale);
 
 		int robotCenterX = x + robotDisplayWidth/2;
 		int robotCenterY = y + robotDisplayWidth/2;
 
 		g2d.rotate(Robot.physics.heading, robotCenterX, robotCenterY);
+		
+		g2d.scale(robotScale, robotScale); // purpose is to scale robot image.
+										   // also scales the pixels on the screen, so have to divide coordinates
 
-		// g.drawImage(turnCenterImage, x, y, this);
+		g.drawImage(robotImage, (int) (x / robotScale), (int) (y / robotScale), this);
 
-
-		g.drawImage(robotImage, x, y, this);
+		g.setColor(Color.GREEN);
+		g.drawString("o", (int) (robotCenterX / robotScale), (int) (robotCenterY / robotScale));
     }
     
 	public static void init(){
 		screenWidth = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		screenHeight = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 		try {
-			File robotFile = new File("./robot.png");
-			File turnCenterFile = new File("./turnCenter.png");
+			robotFile = new File("./robot.png");
+			// turnCenterFile = new File("./turnCenter.png");
 
 			robotImage = ImageIO.read(robotFile);
-			turnCenterImage = ImageIO.read(turnCenterFile);
+			// turnCenterImage = ImageIO.read(turnCenterFile);
+
+
 			setDisplayScales(robotFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		JFrame frame = new JFrame("Joystick Sim");
+		frame = new JFrame("Joystick Sim");
 		sim = new GraphicSim();
 		frame.add(sim);
 		frame.setSize((int) screenWidth, (int) screenHeight);
@@ -94,6 +105,14 @@ public class GraphicSim extends JPanel implements MouseListener {
 		robotImgHeight = bufferedImage.getHeight();
 		robotDisplayWidth = (int) (Constants.DISPLAY_SCALE.getDouble() * Constants.ROBOT_WIDTH.getDouble()); //width of robot in pixels
 		robotScale = (double) robotDisplayWidth / robotImgHeight; //scaling robot image to fit display width.
+	}
+
+	public static void rescale(){
+		try {
+			setDisplayScales(robotFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private static double posModulo(double input, double modulo){
