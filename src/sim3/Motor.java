@@ -19,7 +19,7 @@ public class Motor{
     public double voltage;
     public double RPM; //ungeared angular velocity in rotations per minute
     public double torque; //ungeared in newton*meters
-    public double distance; //integrating angular velocity then using wheel circumference, convert to inches
+    // public double distance; //integrating angular velocity then using wheel circumference, convert to inches
     
     public Motor(double gearing_input, Motor.Model motorModel_input, int numMotors_input){
         gearing = gearing_input;
@@ -43,11 +43,11 @@ public class Motor{
         voltage = voltage_input;
     }
 
-    public void integrateVelocity(){
-        double radPerSec = Util.rpmToRadSec(RPM);
-        double changeInAngle = radPerSec * Physics.dt; //change in the angle(radians) of the wheel in 1 update cycle
-        distance += Util.metersToInches(changeInAngle * Constants.WHEEL_RADIUS.getDouble())/12.0; // arclength == angle * radius
-    }
+    // public void integrateVelocity(){ //not being usied right now
+    //     double radPerSec = Util.rpmToRadSec(RPM);
+    //     double changeInAngle = radPerSec * Physics.dt; //change in the angle(radians) of the wheel in 1 update cycle
+    //     distance += Util.metersToInches(changeInAngle * Constants.WHEEL_RADIUS.getDouble())/12.0; // arclength == angle * radius
+    // }
 
     public double calcUngearedTorque(double ungearedAngVelocityRad){ //input is radians per second
         RPM = Util.radSecToRPM(ungearedAngVelocityRad);
@@ -105,12 +105,12 @@ public class Motor{
     }
 
 
-    /**
-     * @return distance in inches rounded to hundreths place
-     */
-    public double getDistance() {
-        return Util.roundHundreths(distance);
-    }
+    // /**
+    //  * @return distance in inches rounded to hundreths place
+    //  */
+    // public double getDistance() {
+    //     return Util.roundHundreths(distance);
+    // }
 
     /**
      * @return RPM rounded to hundreths place

@@ -70,4 +70,12 @@ public class Robot {
         Robot.rightMotor.setVoltage(rightPower*12);
     }
 
+    public static double leftEncoderDist(){
+        return Util.metersToInches(physics.distL);
+    }
+
+    public static double rightEncoderDist(){
+        return Util.metersToInches(physics.distR);
+    }
+
 }

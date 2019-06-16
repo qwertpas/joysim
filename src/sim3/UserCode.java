@@ -1,7 +1,11 @@
 package sim3;
 
+import sim3.Util.MotionProfile;
+import sim3.Util.PID;
+
 public class UserCode{
 
+    private static PID pid = new PID(0.007, 0, 0, 0);
 
     public static void initialize(){
         System.out.println("hello, I just initialized!");
@@ -9,16 +13,15 @@ public class UserCode{
 
     public static void execute(){
 
-        double x = Controls.rawX * 0.3;
-        double y = Controls.rawY * 1.0;
+        double averageDist = (Robot.leftEncoderDist() + Robot.rightEncoderDist()) / 2.0;
 
-        // System.out.println(Robot.leftMotor.getDistance());
-        // System.out.println(Robot.rightMotor.getDistance());
-
-        double leftPower = y + x;
-        double rightPower = y - x;
+        pid.loop(averageDist, 100);
         
-        Robot.setDrivePowers(leftPower, rightPower);
+        Robot.setDrivePowers(pid.getPower(), pid.getPower());
+
+        System.out.println(pid.getPower());
+        
+        
         
     }
 
