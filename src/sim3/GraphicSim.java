@@ -63,6 +63,10 @@ public class GraphicSim extends JPanel implements MouseListener {
 		for(int i = 0; i < screenHeight; i += Constants.DISPLAY_SCALE.getDouble() / Util.metersToFeet(1)){
 			g.drawLine(0, i, screenWidth, i);
 		}
+
+		g.setColor(Color.BLACK);
+		g.drawOval((int) (UserCode.time * 5) + 200, (int) (UserCode.motion.velo * 2) + 300, 2, 2);
+		// g.drawOval((int) (500), (int) (20) + 500, 5, 5);
 		
 
 		int robotCenterX = x + robotDisplayWidth/2;
@@ -136,7 +140,7 @@ public class GraphicSim extends JPanel implements MouseListener {
 	}
 
 	public void mouseClicked(MouseEvent e) {
-		System.out.println("CLKICKED");
+		System.out.println("mouseClicked");
 	}
 
 

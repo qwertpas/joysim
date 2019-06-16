@@ -33,9 +33,15 @@ public class Util {
         return meters * 39.3701;
     }
 
+    public static double inchesToMeters(double inches){
+        return inches / 39.3701;
+    }
+
     public static double roundHundreths(double input){
         return Double.parseDouble(new DecimalFormat("#.##").format(input));
     }
+
+
 
     public static class MotionProfile{
 
@@ -123,7 +129,7 @@ public class Util {
         }
  
     }
-
+// TODO: use PID to follow MotionProfile in UserCode.java (or make follower class?)
     public static class PID {
         //constants
         double kP, kI, kD = 0;

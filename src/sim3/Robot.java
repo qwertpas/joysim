@@ -53,9 +53,11 @@ public class Robot {
                 if(!paused){
                     UserCode.execute();
                 }
-                try {
-                    Thread.sleep(20); //20 millisecond delay or 50 times a second
-                } catch (InterruptedException e) {}
+                try{
+                    Thread.sleep(20);
+                }catch(InterruptedException e){
+                    e.printStackTrace();
+                }
             } //END of UserCodeThread.run().while{}
         } //END of UserCodeThread.run()
 
