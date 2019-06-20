@@ -5,7 +5,11 @@ package sim3;
 
 public class Robot {
 
-    public static Boolean paused = false;
+    public static Boolean paused = true;
+
+    public static double startTime;
+    public static double pausedTime;
+    public static double elaspedTime;
 
     public static Motor leftMotor = new Motor(Constants.GEAR_RATIO.getDouble(), Motor.Model.CIM, Constants.MOTORS_PER_SIDE.getInt());
     public static Motor rightMotor = new Motor(Constants.GEAR_RATIO.getDouble(), Motor.Model.CIM, Constants.MOTORS_PER_SIDE.getInt());
@@ -15,17 +19,21 @@ public class Robot {
         Controls.searchForControllers();
         physics.init();
         GraphicSim.init();
+        GraphicDebug.init();
 
         new GraphicInput().setVisible(true);
         new UserCodeThread();
 
+        startTime = System.nanoTime() * 1e-9;
         while (true) {
 
             while(!paused){
+                elaspedTime = (System.nanoTime() * 1e-9) - pausedTime - startTime;
                 Controls.updateControls();
                 physics.update();
                 if(Constants.printPowers) System.out.println(Controls.rawX + " " + Controls.rawY);
                 GraphicSim.sim.repaint();
+                GraphicDebug.debug.repaint();
             }
 
 

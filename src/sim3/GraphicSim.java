@@ -4,13 +4,17 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.List;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -33,6 +37,7 @@ public class GraphicSim extends JPanel implements MouseListener {
 	static int robotDisplayWidth;
 	static double robotScale;
 
+	static ArrayList<Point> points = new ArrayList<Point>();
 
   	GraphicSim() {
 		addMouseListener(this);
@@ -49,11 +54,12 @@ public class GraphicSim extends JPanel implements MouseListener {
 		int x = (int) posModulo(Robot.physics.x * Constants.DISPLAY_SCALE.getDouble(), windowWidth); // in pixels
 		int y = (int) posModulo(Robot.physics.y * Constants.DISPLAY_SCALE.getDouble(), windowHeight);
 
-		g.drawString("left encoder (in)"+ Util.metersToInches(Robot.physics.distL), 500, 700);
+		g.drawString("left encoder (in) "+ Util.metersToInches(Robot.physics.distL), 500, 700);
 		g.drawString("right encoder (in) "+ Util.metersToInches(Robot.physics.distR), 500, 725);
-		g.drawString("left velo"+ Robot.physics.veloL, 500, 750);
-		g.drawString("right velo"+ Robot.physics.veloR, 500, 775);
-		g.drawString("feet per sec" + Util.roundHundreths(Util.metersToFeet(Robot.physics.linVelo)), 500, 800);
+		g.drawString("left velo "+ Util.roundHundreths(Robot.physics.veloL), 500, 750);
+		g.drawString("right velo "+ Util.roundHundreths(Robot.physics.veloR), 500, 775);
+		g.drawString("feet per sec " + Util.roundHundreths(Util.metersToFeet(Robot.physics.linVelo)), 500, 800);
+		g.drawString("elapsed time " + Util.roundHundreths(Robot.elaspedTime), 500, 825);
 
 		//drawing the grid
 		g.setColor(Color.GRAY.brighter());
@@ -64,8 +70,13 @@ public class GraphicSim extends JPanel implements MouseListener {
 			g.drawLine(0, i, screenWidth, i);
 		}
 
-		g.setColor(Color.BLACK);
-		g.drawOval((int) (UserCode.time * 5) + 200, (int) (UserCode.motion.velo * 2) + 300, 2, 2);
+		// g.setColor(Color.BLACK);
+
+		// points.add(new Point((int) (UserCode.time * 10) + 400, (int) -(UserCode.motion.velo * 10) + 300));
+		// for(Point point : points){
+		// 	g.drawOval((int) point.getX(), (int) point.getY(), 1, 1);
+		// }
+		// g.drawOval((int) (UserCode.time * 5) + 200, (int) (UserCode.motion.velo * 2) + 300, 2, 2);
 		// g.drawOval((int) (500), (int) (20) + 500, 5, 5);
 		
 

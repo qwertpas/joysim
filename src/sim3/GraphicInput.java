@@ -43,7 +43,7 @@ public class GraphicInput extends JFrame implements ActionListener {
         buttonSave.addActionListener(this);
         buttonPause.addActionListener(this);
 
-        resume();
+        pause();
     }
     
     public void actionPerformed(ActionEvent event) {
@@ -80,7 +80,6 @@ public class GraphicInput extends JFrame implements ActionListener {
 
     public static void pause(){
         Robot.paused = true;
-        
         buttonPause.setText("Resume");
         buttonSave.setEnabled(true);
         System.out.println("Paused");
@@ -90,7 +89,7 @@ public class GraphicInput extends JFrame implements ActionListener {
         Robot.paused = false;
         Physics.dt = 0;
         Physics.lastTime = System.nanoTime();
-
+        Robot.pausedTime = (System.nanoTime() * 1e-9) - Robot.elaspedTime - Robot.startTime;
         buttonPause.setText("Pause");
         buttonSave.setEnabled(false);
         System.out.println("Resume");
