@@ -7,10 +7,7 @@ import sim3.Constants.Constant;
 import java.awt.*;
 import java.awt.event.*;
 
-/**
- *  * A Java Swing program that shows how much water you should drink a day.
- *  * @author www.codejava.net  
- */
+
 public class GraphicInput extends JFrame implements ActionListener {
 
     static JPanel panel = new JPanel();

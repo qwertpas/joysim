@@ -37,9 +37,23 @@ public class Util {
         return inches / 39.3701;
     }
 
+    public static double inchesToFeet(double inches){
+        return inches * 12.0;
+    }
+
+    public static double feetToInches(double feet){
+        return feet / 12.0;
+    }
+
     public static double roundHundreths(double input){
         return Double.parseDouble(new DecimalFormat("#.##").format(input));
     }
+
+    public static double posModulo(double input, double modulo){ //modulo but it always returns a positive number, ideal for screen loopback
+		while(input >= modulo) input -= modulo;
+		while(input < 0) input += modulo;
+		return input;
+	}
 
 
 
@@ -57,10 +71,10 @@ public class Util {
             target = target_input;
 
             double time1 = vmax / amax;
-            double time2 = (-vmax / 2.0*amin) + (target / vmax) + (time1 / 2.0);
+            double time2 = (-vmax / (2.0*amin)) + (target / vmax) + (time1 / 2.0);
             if(time1 < time2){
                 isTrapezoid = true;
-                double time3 = (target / vmax) + (time1 / 2.0) + (vmax / 2*amin);
+                double time3 = (target / vmax) + (time1 / 2.0) + (vmax / (2.0*amin));
                 times = new double[]{0.0, time1, time2, time3}; //added a zero in the first index so times[1] is time1
             } else {
                 isTrapezoid = false;
@@ -93,6 +107,9 @@ public class Util {
                            (0.5 * (time - times[2]) * ((vmax) + (vmax - (amin * (time - times[2])))));
                 } else if(time > times[3]){
                     done = true;
+                    accel = 0;
+                    velo = 0;
+                    dist = target;
                 }
             } else {
                 if(time < times[1]){
@@ -106,6 +123,9 @@ public class Util {
                            (0.5 * (time - times[1]) * (amax*times[1] + amax*times[1] - (amin * (time - times[1]))));
                 } else if(time > times[2]){
                     done = true;
+                    accel = 0;
+                    velo = 0;
+                    dist = target;
                 }
             }
             return new MotionProfilePoint(accel, velo, dist);
@@ -120,12 +140,29 @@ public class Util {
             }
         }
 
+
         public static void main(String[] args) {
-            MotionProfile testProfile = new MotionProfile(3, 1, 1, 15);
+            double scale = 10;
+
+            MotionProfile testProfile = new MotionProfile(3 * scale, 1*scale, -1*scale, 15*scale);
+
+            // MotionProfile testProfile = new MotionProfile(Util.metersToInches(3), //max velocity
+            //                                               Util.metersToInches(1), //max acceleration
+            //                                               Util.metersToInches(-1), //min acceleration
+            //                                               Util.metersToInches(15) ); //target distance
+
+                                                          
             System.out.println("is trapezoid: " + testProfile.isTrapezoid);
+            System.out.println("time1: " + testProfile.times[1]);
+            System.out.println("time2: " + testProfile.times[2]);
+            if(testProfile.isTrapezoid){
+                System.out.println("time3: " + testProfile.times[3]);
+            }
             System.out.println("accel: " + testProfile.getPoint(0).accel);
             System.out.println("velo: " + testProfile.getPoint(0).velo);
             System.out.println("dist: " + testProfile.getPoint(0).dist);
+            
+            System.out.println("calc: " + (3*10)/(1*10));
         }
  
     }

@@ -13,15 +13,22 @@ public class Robot {
 
     public static Motor leftMotor = new Motor(Constants.GEAR_RATIO.getDouble(), Motor.Model.CIM, Constants.MOTORS_PER_SIDE.getInt());
     public static Motor rightMotor = new Motor(Constants.GEAR_RATIO.getDouble(), Motor.Model.CIM, Constants.MOTORS_PER_SIDE.getInt());
-    public static Physics physics = new Physics();
+    public static Physics physics;
+    public static GraphicDebug debug;
+
 
     public static void main(String[] args) {
+
+        physics = new Physics();
+
         Controls.searchForControllers();
         physics.init();
         GraphicSim.init();
-        GraphicDebug.init();
+        
 
         new GraphicInput().setVisible(true);
+        GraphicDebug.init();
+
         new UserCodeThread();
 
         startTime = System.nanoTime() * 1e-9;
@@ -33,7 +40,7 @@ public class Robot {
                 physics.update();
                 if(Constants.printPowers) System.out.println(Controls.rawX + " " + Controls.rawY);
                 GraphicSim.sim.repaint();
-                GraphicDebug.debug.repaint();
+                GraphicDebug.paintAll();
             }
 
 

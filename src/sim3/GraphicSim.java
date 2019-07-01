@@ -4,13 +4,11 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.List;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -51,13 +49,13 @@ public class GraphicSim extends JPanel implements MouseListener {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-		int x = (int) posModulo(Robot.physics.x * Constants.DISPLAY_SCALE.getDouble(), windowWidth); // in pixels
-		int y = (int) posModulo(Robot.physics.y * Constants.DISPLAY_SCALE.getDouble(), windowHeight);
+		int x = (int) Util.posModulo(Robot.physics.x * Constants.DISPLAY_SCALE.getDouble(), windowWidth); // in pixels
+		int y = (int) Util.posModulo(Robot.physics.y * Constants.DISPLAY_SCALE.getDouble(), windowHeight);
 
 		g.drawString("left encoder (in) "+ Util.metersToInches(Robot.physics.distL), 500, 700);
 		g.drawString("right encoder (in) "+ Util.metersToInches(Robot.physics.distR), 500, 725);
-		g.drawString("left velo "+ Util.roundHundreths(Robot.physics.veloL), 500, 750);
-		g.drawString("right velo "+ Util.roundHundreths(Robot.physics.veloR), 500, 775);
+		g.drawString("usercode power "+ Util.roundHundreths(UserCode.power), 500, 750);
+		// g.drawString("right velo "+ Util.roundHundreths(Robot.physics.veloR), 500, 775);
 		g.drawString("feet per sec " + Util.roundHundreths(Util.metersToFeet(Robot.physics.linVelo)), 500, 800);
 		g.drawString("elapsed time " + Util.roundHundreths(Robot.elaspedTime), 500, 825);
 
@@ -132,11 +130,7 @@ public class GraphicSim extends JPanel implements MouseListener {
 		}
 	}
 
-	private static double posModulo(double input, double modulo){
-		while(input >= modulo) input -= modulo;
-		while(input < 0) input += modulo;
-		return input;
-	}
+	
 
     public void mousePressed(MouseEvent e) {
 	}
