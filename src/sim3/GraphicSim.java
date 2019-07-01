@@ -19,6 +19,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class GraphicSim extends JPanel implements MouseListener {
+	private static final long serialVersionUID = -87884863222799400L;
 
 	static JFrame frame;
 

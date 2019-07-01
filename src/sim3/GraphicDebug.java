@@ -12,8 +12,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class GraphicDebug extends JPanel{
-    
-    //static functions and variables
+    private static final long serialVersionUID = -3303992246381800667L;
+
+    // static functions and variables
     public static int numInstances = 0;
 
     public static GraphicDebug position;

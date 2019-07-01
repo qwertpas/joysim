@@ -1,10 +1,7 @@
 package sim3;
 
 import java.awt.Color;
-import java.awt.Point;
-
 import sim3.Util.MotionProfile;
-import sim3.Util.PID;
 import sim3.Util.MotionProfile.MotionProfilePoint;
 
 public class UserCode{
@@ -21,7 +18,6 @@ public class UserCode{
                                           Util.metersToInches(15) ); //target distance
 
         
-        // motionProfile = new MotionProfile(3*10, 1*10, -1*10, 15*10);
                     
         System.out.println("isTrapezoid profile: " + motionProfile.isTrapezoid);
         System.out.println("estimated time: " + motionProfile.times[motionProfile.times.length-1]);
@@ -45,9 +41,7 @@ public class UserCode{
 
         if(!motionProfile.done){
             power = fric_feed + 
-                    (0.05 * x_error);
-        } else {
-            power = 0.0;
+                    (0.03 * x_error);
         }
         
         
@@ -71,7 +65,7 @@ public class UserCode{
         //current position
         GraphicDebug.position.addSerie(Color.RED);
         GraphicDebug.position.series.get(0).on = true;
-        //target velocity
+        //target position
         GraphicDebug.position.addSerie(Color.BLACK);
         GraphicDebug.position.series.get(1).on = true;
 
@@ -84,11 +78,14 @@ public class UserCode{
     }
 
     private static void debugLoop(){
-        GraphicDebug.velocity.series.get(0).addPoint( 10 * Robot.elaspedTime, Util.metersToInches(Robot.physics.linVelo));
-        GraphicDebug.velocity.series.get(1).addPoint( 10 * Robot.elaspedTime, motion.velo);
+        GraphicDebug.position.series.get(0).addPoint( 25 * Robot.elaspedTime, 0.3 * Robot.leftEncoderDist());
+        GraphicDebug.position.series.get(1).addPoint( 25 * Robot.elaspedTime, 0.3 * motion.dist);
 
-        GraphicDebug.position.series.get(0).addPoint( 10 * Robot.elaspedTime, 0.3 * Robot.leftEncoderDist());
-        GraphicDebug.position.series.get(1).addPoint( 10 * Robot.elaspedTime, 0.3 * motion.dist);
+        //TODO: physics.linVelo seems higher than expected, or leftEncoderDist() lower than expected
+        GraphicDebug.velocity.series.get(0).addPoint( 25 * Robot.elaspedTime, Util.metersToInches(Robot.physics.linVelo));
+        GraphicDebug.velocity.series.get(1).addPoint( 25 * Robot.elaspedTime, motion.velo);
+
+
     }
 
 

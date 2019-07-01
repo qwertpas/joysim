@@ -9,6 +9,7 @@ import java.awt.event.*;
 
 
 public class GraphicInput extends JFrame implements ActionListener {
+    private static final long serialVersionUID = 3664593486389802170L;
 
     static JPanel panel = new JPanel();
     JScrollPane scrollPane = new JScrollPane(panel);

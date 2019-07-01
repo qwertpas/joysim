@@ -166,7 +166,7 @@ public class Util {
         }
  
     }
-// TODO: use PID to follow MotionProfile in UserCode.java (or make follower class?)
+    
     public static class PID {
         //constants
         double kP, kI, kD = 0;
