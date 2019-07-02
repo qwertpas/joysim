@@ -47,6 +47,7 @@ public class UserCode{
         
     
         Robot.setDrivePowers(power, power);
+        // Robot.setDrivePowers(1, 1);
 
         
         // System.out.println("Diff dist: " + (Util.inchesToMeters(Robot.leftEncoderDist()) - motion.dist));

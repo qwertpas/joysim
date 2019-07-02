@@ -37,7 +37,8 @@ public class Physics{
 
     public void update(){
         dt = (System.nanoTime() - lastTime) / 1e+9; //change in time (seconds) used for integrating
-        
+        lastTime = System.nanoTime();
+
 
         torqueL = Robot.leftMotor.calcGearedTorque(veloL / Constants.WHEEL_RADIUS.getDouble());
         torqueR = Robot.rightMotor.calcGearedTorque(veloR / Constants.WHEEL_RADIUS.getDouble());
@@ -62,7 +63,6 @@ public class Physics{
 
         x = x + linVelo * dt * Math.cos(heading); //for display purposes
         y = y + linVelo * dt * Math.sin(heading);
-        lastTime = System.nanoTime();
     }
 
 
