@@ -88,11 +88,11 @@ public class Robot {
     }
 
     public static double leftEncoderDist(){
-        return Util.metersToInches(physics.distL);
+        return Util.roundHundreths(Util.metersToInches(physics.distL));
     }
 
     public static double rightEncoderDist(){
-        return Util.metersToInches(physics.distR);
+        return Util.roundHundreths(Util.metersToInches(physics.distR));
     }
 
 }

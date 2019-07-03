@@ -53,13 +53,11 @@ public class GraphicSim extends JPanel implements MouseListener {
 		int x = (int) Util.posModulo(Robot.physics.x * Constants.DISPLAY_SCALE.getDouble(), windowWidth); // in pixels
 		int y = (int) Util.posModulo(Robot.physics.y * Constants.DISPLAY_SCALE.getDouble(), windowHeight);
 
-		g.drawString("left encoder (in) "+ Util.metersToInches(Robot.physics.distL), 500, 700);
-		g.drawString("right encoder (in) "+ Util.metersToInches(Robot.physics.distR), 500, 725);
-		g.drawString("usercode power "+ Util.roundHundreths(UserCode.power), 500, 750);
-		// g.drawString("right velo "+ Util.roundHundreths(Robot.physics.veloR), 500, 775);
-		g.drawString("linVelo " + Util.roundHundreths(Util.metersToFeet(Robot.physics.linVelo)), 500, 800);
-		g.drawString("veloL " + Util.roundHundreths(Util.metersToFeet(Robot.physics.veloL)), 500, 825);
-		g.drawString("elapsed time " + Util.roundHundreths(Robot.elaspedTime), 500, 850);
+		g.drawString("left encoder (in) "+ Robot.leftEncoderDist(), 500, 700);
+		g.drawString("right encoder (in) "+ Robot.leftEncoderDist(), 500, 725);
+		g.drawString("linear velocity " + Util.roundHundreths(Util.metersToFeet(Robot.physics.linVelo)), 500, 750);
+		g.drawString("usercode power "+ Util.roundHundreths(UserCode.power), 500, 775);
+		g.drawString("elapsed time " + Util.roundHundreths(Robot.elaspedTime), 500, 800);
 
 		//drawing the grid
 		g.setColor(Color.GRAY.brighter());

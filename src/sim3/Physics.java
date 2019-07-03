@@ -2,8 +2,8 @@ package sim3;
 
 public class Physics{
 
-    double x = 5;
-    double y = 5;
+    double x = 2;
+    double y = 6;
     double heading = 0;
 
     double linVelo = 0;

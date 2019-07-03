@@ -49,9 +49,23 @@ public class GraphicDebug extends JPanel{
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    public void addSerie(){
+        series.add(new Serie());
+    }
+
     public void addSerie(Color color){
         series.add(new Serie(color));
     }
+
+    public void addSerie(int lineWidth){
+        series.add(new Serie(lineWidth));
+    }
+
+    public void addSerie(Color color, int lineWidth){
+        series.add(new Serie(color, lineWidth));
+    }
+
+    
 
     
     @Override
@@ -65,7 +79,7 @@ public class GraphicDebug extends JPanel{
                 g.setColor(serie.color);
                 synchronized(serie.points){
                     for(Point point : serie.points){
-                        g.drawOval((int) point.getX() + 10, (int) point.getY() - 30, 1, 1);
+                        g.fillOval((int) point.getX() + 10, (int) (frame.getContentPane().getHeight() - point.getY() - 30), serie.lineWidth, serie.lineWidth);
                     }
                 }
                 
@@ -75,17 +89,30 @@ public class GraphicDebug extends JPanel{
 
 
     public class Serie{ //series but singular :/
-        Color color;
+        Color color = Color.BLACK;
+        int lineWidth = 1;
         volatile ArrayList<Point> points = new ArrayList<Point>();
         volatile Boolean on = false; //set to true once UserCode initializes
+
+        public Serie(){
+        }
 
         public Serie(Color color_input){
             color = color_input;
         }
 
+        public Serie(int lineWidth_input){
+            lineWidth = lineWidth_input;
+        }
+
+        public Serie(Color color_input, int lineWidth_input){
+            color = color_input;
+            lineWidth = lineWidth_input;
+        }
+
         public void addPoint(double x, double y){
             synchronized(points){ //synchronized so usercode thread can call this while painting and avoid concurrentModificationException
-                points.add(new Point((int) x, frame.getContentPane().getHeight() - (int) y));
+                points.add(new Point((int) x, (int) y));
             }
         }
     }

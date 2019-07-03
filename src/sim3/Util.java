@@ -118,7 +118,7 @@ public class Util {
                     dist = 0.5 * amax * time * time;
                 } else if(time < times[2]){
                     accel = amin;
-                    velo = (amax * time) - (amin * (time - times[1]));
+                    velo = (amax * times[1]) - (amax * (time - times[1]));
                     dist = (0.5 * amax * times[1] * times[1]) + 
                            (0.5 * (time - times[1]) * (amax*times[1] + amax*times[1] - (amin * (time - times[1]))));
                 } else if(time > times[2]){

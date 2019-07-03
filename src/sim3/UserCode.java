@@ -1,6 +1,8 @@
 package sim3;
 
 import java.awt.Color;
+import java.util.Arrays;
+
 import sim3.Util.MotionProfile;
 import sim3.Util.MotionProfile.MotionProfilePoint;
 
@@ -13,14 +15,14 @@ public class UserCode{
 
     public static void initialize(){ //don't delete this function; it is called by Robot.java
         motionProfile = new MotionProfile(Util.metersToInches(3), //max velocity
-                                          Util.metersToInches(1), //max acceleration
-                                          Util.metersToInches(-1), //min acceleration
-                                          Util.metersToInches(15) ); //target distance
+                                          Util.metersToInches(2), //max acceleration
+                                          Util.metersToInches(-2.5), //min acceleration
+                                          360 ); //target distance
 
         
                     
         System.out.println("isTrapezoid profile: " + motionProfile.isTrapezoid);
-        System.out.println("estimated time: " + motionProfile.times[motionProfile.times.length-1]);
+        System.out.println("time: " + Arrays.toString(motionProfile.times));
         System.out.println("initted usercode");
         motion = motionProfile.getPoint(0); //initial motion point
         debugInit();
@@ -30,9 +32,10 @@ public class UserCode{
         motion = motionProfile.getPoint(Robot.elaspedTime);
         debugLoop();
 
-        double fric_feed = 0.2;
+        double fric_feed = 0.1;
 
         double x_error = motion.dist - Robot.leftEncoderDist();
+        double v_error = motion.velo - Util.metersToInches(Robot.physics.linVelo);
 
         // double v_error = motion.dist - Robot.physics.linVelo;
         // double power = (motion.dist * 0.00) + 
@@ -40,13 +43,17 @@ public class UserCode{
         //                (motion.accel * 0.0);
 
         if(!motionProfile.done){
-            power = fric_feed + 
-                    (0.03 * x_error);
+            power = (Math.copySign(fric_feed, Robot.physics.linVelo)) + 
+            (0.1 * x_error) +
+            (0.1 * v_error);  
+        } else {
+            power = 0;
         }
-        
+              
         
     
         Robot.setDrivePowers(power, power);
+
         // Robot.setDrivePowers(1, 1);
 
         
@@ -63,30 +70,33 @@ public class UserCode{
 
     //user's util functions
     private static void debugInit(){
-        //current position
-        GraphicDebug.position.addSerie(Color.RED);
-        GraphicDebug.position.series.get(0).on = true;
-        //target position
-        GraphicDebug.position.addSerie(Color.BLACK);
-        GraphicDebug.position.series.get(1).on = true;
 
-        //current velocity
-        GraphicDebug.velocity.addSerie(Color.RED);
-        GraphicDebug.velocity.series.get(0).on = true;
+        //target position
+        GraphicDebug.position.addSerie(Color.BLACK, 5);
+        GraphicDebug.position.series.get(0).on = true;
+        //current position
+        GraphicDebug.position.addSerie(Color.RED, 4);
+        GraphicDebug.position.series.get(1).on = true;
+        
         //target velocity
-        GraphicDebug.velocity.addSerie(Color.BLACK);
+        GraphicDebug.velocity.addSerie(Color.BLACK, 5);
+        GraphicDebug.velocity.series.get(0).on = true;
+        //current velocity
+        GraphicDebug.velocity.addSerie(Color.RED, 4);
         GraphicDebug.velocity.series.get(1).on = true;
+        
     }
 
+    final static double time_scale = 80;
+    final static double dist_scale = 1;
+    final static double velo_scale = 3;
+
     private static void debugLoop(){
-        GraphicDebug.position.series.get(0).addPoint( 25 * Robot.elaspedTime, 0.3 * Robot.leftEncoderDist());
-        GraphicDebug.position.series.get(1).addPoint( 25 * Robot.elaspedTime, 0.3 * motion.dist);
+        GraphicDebug.position.series.get(0).addPoint( time_scale * Robot.elaspedTime, dist_scale * motion.dist);
+        GraphicDebug.position.series.get(1).addPoint( time_scale * Robot.elaspedTime, dist_scale * Robot.leftEncoderDist());
 
-        //TODO: physics.linVelo seems higher than expected, or leftEncoderDist() lower than expected
-        GraphicDebug.velocity.series.get(0).addPoint( 25 * Robot.elaspedTime, Util.metersToInches(Robot.physics.linVelo));
-        GraphicDebug.velocity.series.get(1).addPoint( 25 * Robot.elaspedTime, motion.velo);
-
-
+        GraphicDebug.velocity.series.get(0).addPoint( time_scale * Robot.elaspedTime, velo_scale * motion.velo);
+        GraphicDebug.velocity.series.get(1).addPoint( time_scale * Robot.elaspedTime, velo_scale * Util.metersToInches(Robot.physics.linVelo));
     }
 
 
