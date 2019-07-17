@@ -55,7 +55,7 @@ public class GraphicSim extends JPanel implements MouseListener {
 
 		g.drawString("left encoder (in) "+ Robot.leftEncoderDist(), 500, 700);
 		g.drawString("right encoder (in) "+ Robot.leftEncoderDist(), 500, 725);
-		g.drawString("linear velocity " + Util.roundHundreths(Util.metersToFeet(Robot.physics.linVelo)), 500, 750);
+		g.drawString("linear velocity (ft/sec) " + Util.roundHundreths(Util.metersToFeet(Robot.physics.linVelo)), 500, 750);
 		g.drawString("usercode power "+ Util.roundHundreths(UserCode.power), 500, 775);
 		g.drawString("elapsed time " + Util.roundHundreths(Robot.elaspedTime), 500, 800);
 
@@ -67,15 +67,6 @@ public class GraphicSim extends JPanel implements MouseListener {
 		for(int i = 0; i < screenHeight; i += Constants.DISPLAY_SCALE.getDouble() / Util.metersToFeet(1)){
 			g.drawLine(0, i, screenWidth, i);
 		}
-
-		// g.setColor(Color.BLACK);
-
-		// points.add(new Point((int) (UserCode.time * 10) + 400, (int) -(UserCode.motion.velo * 10) + 300));
-		// for(Point point : points){
-		// 	g.drawOval((int) point.getX(), (int) point.getY(), 1, 1);
-		// }
-		// g.drawOval((int) (UserCode.time * 5) + 200, (int) (UserCode.motion.velo * 2) + 300, 2, 2);
-		// g.drawOval((int) (500), (int) (20) + 500, 5, 5);
 		
 
 		int robotCenterX = x + robotDisplayWidth/2;
@@ -83,8 +74,7 @@ public class GraphicSim extends JPanel implements MouseListener {
 
 		g2d.rotate(Robot.physics.heading, robotCenterX, robotCenterY);
 		
-		g2d.scale(robotScale, robotScale); // purpose is to scale robot image.
-										   // also scales the pixels on the screen, so have to divide coordinates
+		g2d.scale(robotScale, robotScale);
 
 		g.drawImage(robotImage, (int) (x / robotScale), (int) (y / robotScale), this);
 

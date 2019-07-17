@@ -25,15 +25,26 @@ public class Controls {
 					|| controller.getType() == Controller.Type.WHEEL
 					|| controller.getType() == Controller.Type.FINGERSTICK) {
 				// Add new controller to the list of all controllers.
-				foundControllers.add(controller);
+                foundControllers.add(controller);
 			}
         }
 
         if(foundControllers.size() == 0){
             System.out.println("No Controller found, using mouse coords");
             usingMouse = true;
+        }else{
+            System.out.println("Found controllers : " + foundControllers);
         }
-	}
+    }
+    
+    public static void main(String[] args) throws InterruptedException {
+        // for testing joystick
+        searchForControllers();
+        while(true){
+            updateControls();
+            Thread.sleep(100);
+        }
+    }
 
     static void updateControls() {
 		if (usingMouse) {
@@ -49,28 +60,24 @@ public class Controls {
     }
     
     private static void getControllerData(Controller controller){
-        // Go trough all components of the controller.
+        if(!controller.poll()){ //polls controller, if it returns false then polling has failed
+            System.out.println("Controller disconnected, using mouse");
+            usingMouse = true;
+            return;
+        }
         Component[] components = controller.getComponents();
         for (int i = 0; i < components.length; i++) {
             Component component = components[i];
             Identifier componentIdentifier = component.getIdentifier();
-            // Axes
-            if (component.isAnalog()) {
-                float axisValue = component.getPollData();
-                // X axis
-                System.out.println("using joystick");
-                if (componentIdentifier == Component.Identifier.Axis.X) {
-                    rawX = axisValue;
-                    System.out.println("rawX = " + rawX);
-                    continue;
-                }
-                // Y axis
-                if (componentIdentifier == Component.Identifier.Axis.Y) {
-                    rawY = -axisValue;
-                    System.out.println("Y = " + rawY);
-                    continue;
-                }
+            float value = component.getPollData();
+
+            if(componentIdentifier == Component.Identifier.Axis.X){
+                rawX = value;
+            }else if(componentIdentifier == Component.Identifier.Axis.Y){
+                rawY = value;
             }
+                
+            
         }
     }
 

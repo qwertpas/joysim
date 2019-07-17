@@ -52,9 +52,9 @@ public class UserCode{
               
         
     
-        Robot.setDrivePowers(power, power);
+        // Robot.setDrivePowers(power, power);
 
-        // Robot.setDrivePowers(1, 1);
+        Robot.setDrivePowers(-Controls.rawY + 0.2*Controls.rawX, -Controls.rawY - 0.2*Controls.rawX);
 
         
         // System.out.println("Diff dist: " + (Util.inchesToMeters(Robot.leftEncoderDist()) - motion.dist));
