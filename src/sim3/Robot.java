@@ -27,7 +27,6 @@ public class Robot {
         
 
         new GraphicInput().setVisible(true);
-        GraphicDebug.init();
 
         new UserCodeThread();
 
@@ -40,7 +39,6 @@ public class Robot {
                 physics.update();
                 if(Constants.printPowers) System.out.println(Controls.rawX + " " + Controls.rawY);
                 GraphicSim.sim.repaint();
-                GraphicDebug.paintAll();
             }
 
 
