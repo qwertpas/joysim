@@ -21,9 +21,9 @@ public class Robot {
 
         physics = new Physics();
 
-        Controls.searchForControllers();
         physics.init();
         GraphicSim.init();
+        Controls.init();
         
 
         new GraphicInput().setVisible(true);
@@ -35,7 +35,6 @@ public class Robot {
 
             while(!paused){
                 elaspedTime = (System.nanoTime() * 1e-9) - pausedTime - startTime;
-                Controls.updateControls();
                 physics.update();
                 if(Constants.printPowers) System.out.println(Controls.rawX + " " + Controls.rawY);
                 GraphicSim.sim.repaint();
@@ -65,6 +64,7 @@ public class Robot {
             while(!exit) {
                 if(!paused){
                     UserCode.execute();
+                    Controls.updateControls();
                 }
                 try{
                     Thread.sleep(20);

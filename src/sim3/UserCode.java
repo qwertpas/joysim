@@ -15,44 +15,41 @@ public class UserCode{
     static volatile double power;
 
     public static void initialize(){ //don't delete this function; it is called by Robot.java
-        motionProfile = new MotionProfile(Util.metersToInches(3), //max velocity
-                                          Util.metersToInches(2), //max acceleration
-                                          Util.metersToInches(-2.5), //min acceleration
-                                          360 ); //target distance
+        // motionProfile = new MotionProfile(Util.metersToInches(3), //max velocity
+        //                                   Util.metersToInches(2), //max acceleration
+        //                                   Util.metersToInches(-2.5), //min acceleration
+        //                                   360 ); //target distance
 
         
                     
-        System.out.println("isTrapezoid profile: " + motionProfile.isTrapezoid);
-        System.out.println("time: " + Arrays.toString(motionProfile.times));
-        System.out.println("initted usercode");
-        motion = motionProfile.getPoint(0); //initial motion point
-        GraphicDebug.turnOnAll();
+        // System.out.println("isTrapezoid profile: " + motionProfile.isTrapezoid);
+        // System.out.println("time: " + Arrays.toString(motionProfile.times));
+        // System.out.println("initted usercode");
+        // motion = motionProfile.getPoint(0); //initial motion point
+        // GraphicDebug.turnOnAll();
     }
 
     public static void execute(){ //don't delete this function; it is called by Robot.java
-        motion = motionProfile.getPoint(Robot.elaspedTime);
+        // motion = motionProfile.getPoint(Robot.elaspedTime);
 
-        double fric_feed = 0.1;
-        double x_error = motion.dist - Robot.leftEncoderDist();
-        double v_error = motion.velo - Util.metersToInches(Robot.physics.linVelo);
+        // double fric_feed = 0.1;
+        // double x_error = motion.dist - Robot.leftEncoderDist();
+        // double v_error = motion.velo - Util.metersToInches(Robot.physics.linVelo);
 
-        // double v_error = motion.dist - Robot.physics.linVelo;
-        // double power = (motion.dist * 0.00) + 
-        //                (motion.velo * 0.2) + 
-        //                (motion.accel * 0.0);
-
-        if(!motionProfile.done){
-            power = (Math.copySign(fric_feed, Robot.physics.linVelo)) + 
-            (0.1 * x_error) +
-            (0.1 * v_error);  
-        } else {
-            power = 0;
-        }
+        // if(!motionProfile.done){
+        //     power = (Math.copySign(fric_feed, Robot.physics.linVelo)) + 
+        //     (0.1 * x_error) +
+        //     (0.1 * v_error);  
+        // } else {
+        //     power = 0;
+        // }
               
-        Robot.setDrivePowers(power, power);
-        // Robot.setDrivePowers(-Controls.rawY + 0.2*Controls.rawX, -Controls.rawY - 0.2*Controls.rawX);
+        // Robot.setDrivePowers(power, power);
+        Boolean  isQuickTurn = Controls.buttons.get(1);
+        double[] powers = Util.cheesyDrive(-Controls.rawY, -Controls.rawX, isQuickTurn, false);
+        Robot.setDrivePowers(powers[0], powers[1]);
 
-        graph();
+        // graph();
     }
 
     // Graphs
