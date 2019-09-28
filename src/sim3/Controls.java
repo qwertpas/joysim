@@ -58,7 +58,7 @@ public class Controls {
     
     private static void getMouseData() {
 		rawX = (MouseInfo.getPointerInfo().getLocation().getX() - (GraphicSim.screenWidth / 2)) / (GraphicSim.screenWidth / 2);
-		rawY = (MouseInfo.getPointerInfo().getLocation().getY() - (GraphicSim.screenHeight / 2)) / -(GraphicSim.screenHeight / 2);
+		rawY = -(MouseInfo.getPointerInfo().getLocation().getY() - (GraphicSim.screenHeight / 2)) / -(GraphicSim.screenHeight / 2);
     }
     
     private static void getControllerData(Controller controller){
@@ -84,40 +84,40 @@ public class Controls {
             }else
             if(componentIdentifier == Component.Identifier.Button._1){
                 buttons.set(1, floatToBoolean(value));
-            }else
-            if(componentIdentifier == Component.Identifier.Button._2){
-                buttons.set(2, floatToBoolean(value));
-            }else
-            if(componentIdentifier == Component.Identifier.Button._3){
-                buttons.set(3, floatToBoolean(value));
-            }else
-            if(componentIdentifier == Component.Identifier.Button._4){
-                buttons.set(4, floatToBoolean(value));
-            }else
-            if(componentIdentifier == Component.Identifier.Button._5){
-                buttons.set(5, floatToBoolean(value));
-            }else
-            if(componentIdentifier == Component.Identifier.Button._6){
-                buttons.set(6, floatToBoolean(value));
-            }else
-            if(componentIdentifier == Component.Identifier.Button._7){
-                buttons.set(7, floatToBoolean(value));
-            }else
-            if(componentIdentifier == Component.Identifier.Button._8){
-                buttons.set(8, floatToBoolean(value));
-            }else
-            if(componentIdentifier == Component.Identifier.Button._9){
-                buttons.set(9, floatToBoolean(value));
-            }else
-            if(componentIdentifier == Component.Identifier.Button._10){
-                buttons.set(10, floatToBoolean(value));
-            }else
-            if(componentIdentifier == Component.Identifier.Button._11){
-                buttons.set(11, floatToBoolean(value));
-            }else
-            if(componentIdentifier == Component.Identifier.Button._12){
-                buttons.set(12, floatToBoolean(value));
-            }
+            }//else
+            // if(componentIdentifier == Component.Identifier.Button._2){
+            //     buttons.set(2, floatToBoolean(value));
+            // }else
+            // if(componentIdentifier == Component.Identifier.Button._3){
+            //     buttons.set(3, floatToBoolean(value));
+            // }else
+            // if(componentIdentifier == Component.Identifier.Button._4){
+            //     buttons.set(4, floatToBoolean(value));
+            // }else
+            // if(componentIdentifier == Component.Identifier.Button._5){
+            //     buttons.set(5, floatToBoolean(value));
+            // }else
+            // if(componentIdentifier == Component.Identifier.Button._6){
+            //     buttons.set(6, floatToBoolean(value));
+            // }else
+            // if(componentIdentifier == Component.Identifier.Button._7){
+            //     buttons.set(7, floatToBoolean(value));
+            // }else
+            // if(componentIdentifier == Component.Identifier.Button._8){
+            //     buttons.set(8, floatToBoolean(value));
+            // }else
+            // if(componentIdentifier == Component.Identifier.Button._9){
+            //     buttons.set(9, floatToBoolean(value));
+            // }else
+            // if(componentIdentifier == Component.Identifier.Button._10){
+            //     buttons.set(10, floatToBoolean(value));
+            // }else
+            // if(componentIdentifier == Component.Identifier.Button._11){
+            //     buttons.set(11, floatToBoolean(value));
+            // }else
+            // if(componentIdentifier == Component.Identifier.Button._12){
+            //     buttons.set(12, floatToBoolean(value));
+            // }
                 
             
         }

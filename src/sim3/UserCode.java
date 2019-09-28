@@ -14,19 +14,22 @@ public class UserCode{
     static volatile MotionProfilePoint motion;
     static volatile double power;
 
+    static long time;
+
     public static void initialize(){ //don't delete this function; it is called by Robot.java
-        // motionProfile = new MotionProfile(Util.metersToInches(3), //max velocity
-        //                                   Util.metersToInches(2), //max acceleration
-        //                                   Util.metersToInches(-2.5), //min acceleration
-        //                                   360 ); //target distance
+        motionProfile = new MotionProfile(Util.metersToInches(3), //max velocity
+                                          Util.metersToInches(2), //max acceleration
+                                          Util.metersToInches(-2.5), //min acceleration
+                                          360 ); //target distance
 
         
                     
-        // System.out.println("isTrapezoid profile: " + motionProfile.isTrapezoid);
-        // System.out.println("time: " + Arrays.toString(motionProfile.times));
-        // System.out.println("initted usercode");
-        // motion = motionProfile.getPoint(0); //initial motion point
-        // GraphicDebug.turnOnAll();
+        System.out.println("isTrapezoid profile: " + motionProfile.isTrapezoid);
+        System.out.println("time: " + Arrays.toString(motionProfile.times));
+        System.out.println("initted usercode");
+        motion = motionProfile.getPoint(0); //initial motion point
+        GraphicDebug.turnOnAll();
+        time = System.nanoTime();
     }
 
     public static void execute(){ //don't delete this function; it is called by Robot.java
@@ -43,13 +46,19 @@ public class UserCode{
         // } else {
         //     power = 0;
         // }
-              
-        // Robot.setDrivePowers(power, power);
-        Boolean  isQuickTurn = Controls.buttons.get(1);
-        double[] powers = Util.cheesyDrive(-Controls.rawY, -Controls.rawX, isQuickTurn, false);
-        Robot.setDrivePowers(powers[0], powers[1]);
+        if(System.nanoTime() - time < 5e9){
+            Robot.setDrivePowers(0.5, 0.5);
+            System.out.println("run");
 
-        // graph();
+        }else{
+            Robot.setDrivePowers(0, 0);
+            System.out.println("stop");
+        }
+        // Boolean  isQuickTurn = Controls.buttons.get(1);
+        // double[] powers = Util.cheesyDrive(-Controls.rawY, -0.3 *Controls.rawX, isQuickTurn, false);
+        // Robot.setDrivePowers(powers[0], powers[1]);
+
+        graph();
     }
 
     // Graphs

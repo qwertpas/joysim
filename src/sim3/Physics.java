@@ -2,7 +2,7 @@ package sim3;
 
 public class Physics{
 
-    double x = 2;
+    double x = 5;
     double y = 6;
     double heading = 0;
 

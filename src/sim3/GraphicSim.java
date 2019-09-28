@@ -9,6 +9,7 @@ import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -23,10 +24,13 @@ public class GraphicSim extends JPanel implements MouseListener {
 
 	static JFrame frame;
 
+	AffineTransform defaultTransform = new AffineTransform(); //to reset the g2d position and rotation
+
 	static File robotFile;
-	// static File turnCenter;
+	static File targetFile;
+
 	static Image robotImage;
-	// static Image turnCenterImage;
+	static Image targetImage;
 
 	static int screenHeight;
 	static int screenWidth;
@@ -50,7 +54,7 @@ public class GraphicSim extends JPanel implements MouseListener {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-		int x = (int) Util.posModulo(Robot.physics.x * Constants.DISPLAY_SCALE.getDouble(), windowWidth); // in pixels
+		int x = (int) Util.posModulo(Robot.physics.x * Constants.DISPLAY_SCALE.getDouble(), windowWidth); // robot position in pixels
 		int y = (int) Util.posModulo(Robot.physics.y * Constants.DISPLAY_SCALE.getDouble(), windowHeight);
 
 		g.drawString("left encoder (in) "+ Robot.leftEncoderDist(), 500, 700);
@@ -73,13 +77,20 @@ public class GraphicSim extends JPanel implements MouseListener {
 		int robotCenterY = y + robotDisplayWidth/2;
 
 		g2d.rotate(Robot.physics.heading, robotCenterX, robotCenterY);
-		
+
 		g2d.scale(robotScale, robotScale);
-
+		
 		g.drawImage(robotImage, (int) (x / robotScale), (int) (y / robotScale), this);
-
 		g.setColor(Color.GREEN);
 		g.drawString("o", (int) (robotCenterX / robotScale), (int) (robotCenterY / robotScale));
+
+
+		g2d.setTransform(defaultTransform);
+		g2d.scale(robotScale, robotScale);
+
+		g.drawImage(targetImage, (int) (1600 / robotScale), (int) (200 / robotScale), this);
+
+		
     }
     
 	public static void init(){
@@ -87,17 +98,16 @@ public class GraphicSim extends JPanel implements MouseListener {
 		screenHeight = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 		try {
 			robotFile = new File("./robot.png");
-			// turnCenterFile = new File("./turnCenter.png");
+			targetFile = new File("./target.png");
 
 			robotImage = ImageIO.read(robotFile);
-			// turnCenterImage = ImageIO.read(turnCenterFile);
-
+			targetImage = ImageIO.read(targetFile);
 
 			setDisplayScales(robotFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		frame = new JFrame("Joystick Sim");
+		frame = new JFrame("Robot Sim");
 		sim = new GraphicSim();
 		frame.add(sim);
 		frame.setSize((int) screenWidth, (int) screenHeight);
