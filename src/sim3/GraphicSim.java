@@ -60,8 +60,9 @@ public class GraphicSim extends JPanel implements MouseListener {
 		g.drawString("left encoder (in) "+ Robot.leftEncoderDist(), 500, 700);
 		g.drawString("right encoder (in) "+ Robot.leftEncoderDist(), 500, 725);
 		g.drawString("linear velocity (ft/sec) " + Util.roundHundreths(Util.metersToFeet(Robot.physics.linVelo)), 500, 750);
-		g.drawString("usercode power "+ Util.roundHundreths(UserCode.power), 500, 775);
-		g.drawString("elapsed time " + Util.roundHundreths(Robot.elaspedTime), 500, 800);
+		g.drawString("left power "+ Util.roundHundreths(UserCode.lPower), 500, 775);
+		g.drawString("right power "+ Util.roundHundreths(UserCode.rPower), 500, 800);
+		g.drawString("elapsed time " + Util.roundHundreths(Robot.elaspedTime), 500, 825);
 
 		//drawing the grid
 		g.setColor(Color.GRAY.brighter());
