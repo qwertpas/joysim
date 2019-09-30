@@ -39,7 +39,7 @@ public class UserCode{
 
 
 
-    // Motion graphs: just to be
+    // Motion graphs
     static Serie currentPositionSerie = new Serie(Color.BLUE, 3);
     static GraphicDebug positionWindow = new GraphicDebug("Position", new Serie[]{currentPositionSerie});
 
