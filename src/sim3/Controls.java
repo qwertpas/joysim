@@ -79,6 +79,7 @@ public class Controls {
                 rawY = value;
             }
 
+            //commented out the other buttons to improve performance
             if(componentIdentifier == Component.Identifier.Button._0){
                 buttons.set(0, floatToBoolean(value));
             }else

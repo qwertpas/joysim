@@ -18,6 +18,7 @@ public class UserCode{
         //set powers to the simulated robot drivetrain
         lPower = 0.5;
         rPower = 0.5;
+        
         Robot.setDrivePowers(lPower, rPower); //power ranges from -1 to 1
 
         /**
@@ -38,7 +39,7 @@ public class UserCode{
 
 
 
-    // Motion graphs:
+    // Motion graphs: just to be
     static Serie currentPositionSerie = new Serie(Color.BLUE, 3);
     static GraphicDebug positionWindow = new GraphicDebug("Position", new Serie[]{currentPositionSerie});
 
