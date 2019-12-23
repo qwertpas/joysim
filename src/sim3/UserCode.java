@@ -48,7 +48,7 @@ public class UserCode{
     
     private static void graph(){
         currentPositionSerie.addPoint(Robot.elaspedTime, Robot.leftEncoderDist());
-        currentVelocitySerie.addPoint(Robot.elaspedTime, Util.metersToInches(Robot.physics.linVelo));
+        currentVelocitySerie.addPoint(Robot.elaspedTime, Util.metersToFeet(Robot.physics.linVelo));
 
         GraphicDebug.paintAll();
     }
