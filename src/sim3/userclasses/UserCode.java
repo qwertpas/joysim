@@ -5,8 +5,6 @@ import java.awt.Color;
 import sim3.Controls;
 import sim3.GraphicDebug;
 import sim3.Main;
-import sim3.Robot;
-import sim3.Util;
 import sim3.GraphicDebug.Serie;
 
 
@@ -21,8 +19,18 @@ public class UserCode{
 
     public static void execute(){ //this function is run 50 times a second (every 0.02 second)
 
-        lPower = -Controls.rawY - Controls.rawX;
-        rPower = -Controls.rawY + Controls.rawX;
+
+        
+
+
+
+
+
+
+
+
+        lPower = -Controls.rawY;
+        rPower = -Controls.rawY;
 
         setDrivePowers(lPower, rPower); //power ranges from -1 to 1
 

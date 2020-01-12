@@ -16,10 +16,9 @@ public class Constants{
     JPanel panel = new JPanel();
 
     /** ////////////////////////////////////////////
-     * DISPLAY PREFERENCES
+     * DEBUG PREFERENCES
      * //////////////////////////////////////////// */ 
-    public static Boolean printPowers = false;
-    
+    public static Boolean printJoystick = false;    
 
     /** ////////////////////////////////////////////
      * REAL PHYSICAL CONSTANTS (meters, kilograms, seconds) that come from GraphicInput
@@ -43,14 +42,14 @@ public class Constants{
 
     // Wheel scrub torque slows turning, coeff is a combo of fric coeff, drop center, robot length.
     public static Constant WHEEL_SCRUB_MULTIPLIER = new Constant("WHEEL_SCRUB_MULTIPLIER", 30, Type.DOUBLE); 
-
     public static Constant GRAV_ACCEL = new Constant("GRAV_ACCEL", 9.81, Type.DOUBLE);
 
 
-
     public static Constant CONTROLLER_INDEX = new Constant("Controller_INDEX", 0, Type.INT); //which joystick?
-
     public static Constant DISPLAY_SCALE = new Constant("DISPLAY_SCALE", 75, Type.DOUBLE); //in pixels per meter
+
+    public static Constant TURN_ERROR = new Constant("TURN_ERROR", 0.01, Type.DOUBLE); //difference in powers between the two sides (build problem)
+
 
     //constants that are editable by GraphicInput
     public static Constant[] constants = {GEAR_RATIO, 
@@ -67,6 +66,7 @@ public class Constants{
                                    GRAV_ACCEL,
                                    CONTROLLER_INDEX,
                                    DISPLAY_SCALE,
+                                   TURN_ERROR,
                                   };
 
     /** ////////////////////////////////

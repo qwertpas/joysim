@@ -43,8 +43,8 @@ public class Robot{
         leftGearbox.update(veloL / Constants.WHEEL_RADIUS.getDouble());
         rightGearbox.update(veloR / Constants.WHEEL_RADIUS.getDouble());
 
-        torqueL = leftGearbox.getOutputTorque();
-        torqueR = rightGearbox.getOutputTorque();
+        torqueL = leftGearbox.getOutputTorque() - Constants.TURN_ERROR.getDouble();
+        torqueR = rightGearbox.getOutputTorque() + Constants.TURN_ERROR.getDouble();
 
         double forceL = calcWheelForce(torqueL);
         double forceR = calcWheelForce(torqueR);
@@ -85,14 +85,6 @@ public class Robot{
         return torqueNet;
     }
 
-
-    
-
-    public String toString(){
-        return x +" "+ y +" "+ heading +" "+ linVelo +" "+ angVelo +" "+ linAccel +" "+ angAccel;
-    }
-
-    
     public double leftEncoderPosition(){
         double encoderDistSum = 0;
         for(Motor motor : leftGearbox.motors){

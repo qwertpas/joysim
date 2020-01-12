@@ -35,9 +35,11 @@ public class Main {
             while(!paused){
                 elaspedTime = (System.nanoTime() * 1e-9) - pausedTime - startTime;
                 robot.update();
-                if(Constants.printPowers) System.out.println(Controls.rawX + " " + Controls.rawY);
+                if(Constants.printJoystick) System.out.println(Controls.rawX + " " + Controls.rawY);
                 GraphicSim.sim.repaint();
             }
+
+            System.out.println(Constants.ROBOT_ROT_INERTIA);
 
 
             try {
