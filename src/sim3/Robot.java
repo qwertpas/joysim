@@ -1,96 +1,129 @@
 package sim3;
 
+public class Robot{
+
+    double x = 5;
+    double y = 6;
+    double heading = 0;
+
+    public double linVelo = 0;
+    double angVelo = 0;
+
+    double linAccel = 0.1;
+    double angAccel = 0;
+
+    double veloL = 0;
+    double veloR = 0;
+
+    double distL = 0;
+    double distR = 0;
+
+    double torqueL;
+    double torqueR;
+    double torqueNet;
+    double forceNet;
+    Boolean slipping = false;
+
+    static double dt;
+    static double lastTime;
+
+    public Gearbox leftGearbox = new Gearbox(2);
+    public Gearbox rightGearbox = new Gearbox(2);
+
+    public void init(){
+        lastTime = System.nanoTime();
+        leftGearbox.setPower(0);
+        rightGearbox.setPower(0);
+    }
+
+    public void update(){
+        dt = (System.nanoTime() - lastTime) / 1e+9; //change in time (seconds) used for integrating
+        lastTime = System.nanoTime();
+
+        leftGearbox.update(veloL / Constants.WHEEL_RADIUS.getDouble());
+        rightGearbox.update(veloR / Constants.WHEEL_RADIUS.getDouble());
+
+        torqueL = leftGearbox.getOutputTorque();
+        torqueR = rightGearbox.getOutputTorque();
+
+        double forceL = calcWheelForce(torqueL);
+        double forceR = calcWheelForce(torqueR);
+
+        torqueNet = calcTorqueNet(forceL, forceR); //newton*meters
+        forceNet = forceL + forceR; //newtons
+
+        angAccel = torqueNet / Constants.ROBOT_ROT_INERTIA; //rad per sec per sec
+        linAccel = forceNet / Constants.ROBOT_MASS.getDouble(); //meters per sec per sec
+
+        angVelo = angVelo + angAccel * dt;
+        linVelo = linVelo + linAccel * dt;
+        veloL = linVelo + Constants.HALF_DIST_BETWEEN_WHEELS * angVelo;
+        veloR = linVelo - Constants.HALF_DIST_BETWEEN_WHEELS * angVelo;
+
+        heading = heading + angVelo * dt; //integrating angVelo using physics equation
+        distL = distL + veloL * dt; //acting as encoder since integrateVelocity() inside motor isn't working
+        distR = distR + veloR * dt;
+
+        x = x + linVelo * dt * Math.cos(heading); //for display purposes
+        y = y + linVelo * dt * Math.sin(heading);
+    }
 
 
+    private double calcWheelForce(double torque){
+        double force = torque / Constants.WHEEL_RADIUS.getDouble();
+        if(force > Constants.STATIC_FRIC * 0.5){
+            force = Constants.KINE_FRIC;
+            slipping = true;
+        } else slipping = false;
+        return force;
+    }
 
-public class Robot {
-
-    public static Boolean paused = true;
-
-    public static double startTime;
-    public static double pausedTime;
-    public static double elaspedTime;
-
-    public static Motor leftMotor = new Motor(Constants.GEAR_RATIO.getDouble(), Motor.Model.CIM, Constants.MOTORS_PER_SIDE.getInt());
-    public static Motor rightMotor = new Motor(Constants.GEAR_RATIO.getDouble(), Motor.Model.CIM, Constants.MOTORS_PER_SIDE.getInt());
-    public static Physics physics;
-    public static GraphicDebug debug;
-
-
-    public static void main(String[] args) {
-
-        physics = new Physics();
-
-        physics.init();
-        GraphicSim.init();
-        Controls.init();
-        
-
-        new GraphicInput().setVisible(true);
-
-        new UserCodeThread();
-
-        startTime = System.nanoTime() * 1e-9;
-        while (true) {
-
-            while(!paused){
-                elaspedTime = (System.nanoTime() * 1e-9) - pausedTime - startTime;
-                physics.update();
-                if(Constants.printPowers) System.out.println(Controls.rawX + " " + Controls.rawY);
-                GraphicSim.sim.repaint();
-            }
+    private double calcTorqueNet(double forceL, double forceR){
+        double torqueMotors = (forceL - forceR) * Constants.HALF_DIST_BETWEEN_WHEELS; //torque around center of robot
+        //apply scrub
+        torqueNet = Util.applyFrictions(torqueMotors, angVelo, Constants.WHEEL_SCRUB_STATIC, Constants.WHEEL_SCRUB_KINE, Constants.WHEEL_SCRUB_FRIC_THRESHOLD.getDouble());
+        return torqueNet;
+    }
 
 
-            try {
-                Thread.sleep(5);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+    
+
+    public String toString(){
+        return x +" "+ y +" "+ heading +" "+ linVelo +" "+ angVelo +" "+ linAccel +" "+ angAccel;
+    }
+
+    
+    public double leftEncoderPosition(){
+        double encoderDistSum = 0;
+        for(Motor motor : leftGearbox.motors){
+            encoderDistSum += motor.getEncoderPosition();
         }
+        return Util.roundHundreths(encoderDistSum / (double)leftGearbox.motors.length);
     }
 
-    public static class UserCodeThread implements Runnable{
-        private boolean exit;
-        Thread t;
-        UserCodeThread() {
-            t = new Thread(this, "usercode");
-            System.out.println("New Thread: " + t);
-            exit = false;
-            t.start();
+    public double leftEncoderVelocity(){
+        double encoderDistSum = 0;
+        for(Motor motor : leftGearbox.motors){
+            encoderDistSum += motor.getEncoderVelocity();
         }
+        return Util.roundHundreths(encoderDistSum / (double)leftGearbox.motors.length);
+    }
 
-        public void run(){
-            UserCode.initialize();
-            while(!exit) {
-                if(!paused){
-                    UserCode.execute();
-                    Controls.updateControls();
-                }
-                try{
-                    Thread.sleep(20);
-                }catch(InterruptedException e){
-                    e.printStackTrace();
-                }
-            } //END of UserCodeThread.run().while{}
-        } //END of UserCodeThread.run()
-
-        public void stop(){
-            exit = true;
+    public double rightEncoderPosition(){
+        double encoderDistSum = 0;
+        for(Motor motor : rightGearbox.motors){
+            encoderDistSum += motor.getEncoderPosition();
         }
-    } //END of UserCodeThread
-
-
-    public static void setDrivePowers(double leftPower, double rightPower){
-        Robot.leftMotor.setVoltage(leftPower*12);
-        Robot.rightMotor.setVoltage(rightPower*12);
+        return Util.roundHundreths(encoderDistSum / (double)rightGearbox.motors.length);
     }
 
-    public static double leftEncoderDist(){
-        return Util.roundHundreths(Util.metersToInches(physics.distL));
+    public double rightEncoderVelocity(){
+        double encoderDistSum = 0;
+        for(Motor motor : rightGearbox.motors){
+            encoderDistSum += motor.getEncoderVelocity();
+        }
+        return Util.roundHundreths(encoderDistSum / (double)rightGearbox.motors.length);
     }
 
-    public static double rightEncoderDist(){
-        return Util.roundHundreths(Util.metersToInches(physics.distR));
-    }
 
 }

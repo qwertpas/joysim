@@ -1,8 +1,11 @@
-package sim3;
+package sim3.userclasses;
 
 import java.awt.Color;
 import java.util.Arrays;
 
+import sim3.GraphicDebug;
+import sim3.Main;
+import sim3.Util;
 import sim3.GraphicDebug.Serie;
 import sim3.Util.MotionProfile;
 import sim3.Util.MotionProfile.MotionProfilePoint;
@@ -16,7 +19,7 @@ public class UserCode_MoPro{
 
     static long time;
 
-    public static void initialize(){ //don't delete this function; it is called by Robot.java
+    public static void initialize(){ //don't delete this function; it is called by Main.java
         motionProfile = new MotionProfile(Util.metersToInches(3), //max velocity
                                           Util.metersToInches(2), //max acceleration
                                           Util.metersToInches(-2.5), //min acceleration
@@ -32,35 +35,31 @@ public class UserCode_MoPro{
         time = System.nanoTime();
     }
 
-    public static void execute(){ //don't delete this function; it is called by Robot.java
-        motion = motionProfile.getPoint(Robot.elaspedTime);
+    public static void execute(){ //don't delete this function; it is called by Main.java
+        motion = motionProfile.getPoint(Main.elaspedTime);
 
         double fric_feed = 0.1;
-        double x_error = motion.dist - Robot.leftEncoderDist();
-        double v_error = motion.velo - Util.metersToInches(Robot.physics.linVelo);
+        double x_error = motion.dist - Main.robot.leftEncoderPosition();
+        double v_error = motion.velo - Util.metersToInches(Main.robot.linVelo);
 
         if(!motionProfile.done){
-            power = (Math.copySign(fric_feed, Robot.physics.linVelo)) + 
+            power = (Math.copySign(fric_feed, Main.robot.linVelo)) + 
             (0.1 * x_error) +
             (0.1 * v_error);  
         } else {
             power = 0;
         }
-        Robot.setDrivePowers(power, power);
-        // if(System.nanoTime() - time < 5e9){
-        //     Robot.setDrivePowers(0.5, 0.5);
-        //     System.out.println("run");
-
-        // }else{
-        //     Robot.setDrivePowers(0, 0);
-        //     System.out.println("stop");
-        // }
-        // Boolean  isQuickTurn = Controls.buttons.get(1);
-        // double[] powers = Util.cheesyDrive(-Controls.rawY, -0.3 *Controls.rawX, isQuickTurn, false);
-        // Robot.setDrivePowers(powers[0], powers[1]);
+        setDrivePowers(power, power);
 
         graph();
     }
+
+    private static void setDrivePowers(double lPower, double rPower){
+        Main.robot.leftGearbox.setPower(lPower);
+        Main.robot.rightGearbox.setPower(rPower);
+    }
+
+    
 
     // Graphs
     static Serie currentPositionSerie = new Serie(Color.BLUE, 3);
@@ -72,11 +71,11 @@ public class UserCode_MoPro{
     static GraphicDebug velocityWindow = new GraphicDebug("Velocity", new Serie[]{currentVelocitySerie, targetVelocitySerie});
     
     private static void graph(){
-        currentPositionSerie.addPoint(Robot.elaspedTime, Robot.leftEncoderDist());
-        targetPositionSerie.addPoint(Robot.elaspedTime, motion.dist);
+        currentPositionSerie.addPoint(Main.elaspedTime, Main.robot.leftEncoderPosition());
+        targetPositionSerie.addPoint(Main.elaspedTime, motion.dist);
 
-        currentVelocitySerie.addPoint(Robot.elaspedTime, Util.metersToInches(Robot.physics.linVelo));
-        targetVelocitySerie.addPoint(Robot.elaspedTime, motion.velo);
+        currentVelocitySerie.addPoint(Main.elaspedTime, Util.metersToInches(Main.robot.linVelo));
+        targetVelocitySerie.addPoint(Main.elaspedTime, motion.velo);
         
         GraphicDebug.paintAll();
     }

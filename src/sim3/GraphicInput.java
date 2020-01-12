@@ -55,18 +55,16 @@ public class GraphicInput extends JFrame implements ActionListener {
             if(Constants.checkTypes()){ //if all the constants inputted are the correct type
                 Constants.calcConstants();
                 GraphicSim.rescale();
-                Robot.leftMotor.updateMotorConfig();
-                Robot.rightMotor.updateMotorConfig();
                 System.out.println("Saved");
             }else{
-                Robot.paused = true;
+                Main.paused = true;
                 buttonPause.setText("Resume");
                 System.out.println("Paused: Input type error");
             }
         }
 
         if(event.getSource() == buttonPause){
-            if(Robot.paused){
+            if(Main.paused){
                 if(Constants.checkTypes()){
                     resume();
                 }
@@ -77,17 +75,17 @@ public class GraphicInput extends JFrame implements ActionListener {
     }
 
     public static void pause(){
-        Robot.paused = true;
+        Main.paused = true;
         buttonPause.setText("Resume");
         buttonSave.setEnabled(true);
         System.out.println("Paused");
     }
 
     public static void resume(){
-        Robot.paused = false;
-        Physics.dt = 0;
-        Physics.lastTime = System.nanoTime();
-        Robot.pausedTime = (System.nanoTime() * 1e-9) - Robot.elaspedTime - Robot.startTime;
+        Main.paused = false;
+        Robot.dt = 0;
+        Robot.lastTime = System.nanoTime();
+        Main.pausedTime = (System.nanoTime() * 1e-9) - Main.elaspedTime - Main.startTime;
         buttonPause.setText("Pause");
         buttonSave.setEnabled(false);
         System.out.println("Resume");

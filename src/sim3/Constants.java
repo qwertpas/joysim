@@ -18,49 +18,44 @@ public class Constants{
     /** ////////////////////////////////////////////
      * DISPLAY PREFERENCES
      * //////////////////////////////////////////// */ 
-    static Boolean printPowers = false;
+    public static Boolean printPowers = false;
     
 
     /** ////////////////////////////////////////////
      * REAL PHYSICAL CONSTANTS (meters, kilograms, seconds) that come from GraphicInput
      * //////////////////////////////////////////// */ 
-    static Constant GEAR_RATIO = new Constant("GEAR_RATIO", 8, Type.DOUBLE);
-    static Constant MOTORS_PER_SIDE = new Constant("MOTORS_PER_SIDE", 2, Type.INT);
+    public static Constant GEAR_RATIO = new Constant("GEAR_RATIO", 8, Type.DOUBLE);
+    public static Constant STALL_TORQUE = new Constant("STALL_TORQUE", 3.36, Type.DOUBLE); //76 oz-in for yellowjacket 3.7, converted to newton*meters
+    public static Constant FREE_SPEED = new Constant("FREE_SPEED", 936, Type.DOUBLE); //1620 rpm for yellowjacket 3.7, converted to rad/sec
+    public static Constant TICKS_PER_REV = new Constant("TICKS_PER_REV", 103.6, Type.DOUBLE); //1 rev of output shaft of yellowjacket 3.7 -> 103.6 encoder ticks
 
-    static Constant ROBOT_MASS = new Constant("ROBOT_MASS", 45.3592, Type.DOUBLE);
-    static Constant ROBOT_WIDTH = new Constant("ROBOT_WIDTH", 0.6096, Type.DOUBLE);
-    static Constant DIST_BETWEEN_WHEELS = new Constant("DIST_BETWEEN_WHEELS", 0.508, Type.DOUBLE);
-    static Constant WHEEL_RADIUS = new Constant("WHEEL_RADIUS", 0.0762, Type.DOUBLE);
-    static Constant STATIC_FRIC_COEFF = new Constant("STATIC_FRIC_COEFF", 1.1, Type.DOUBLE); //between wheels and ground
-    static Constant KINE_FRIC_COEFF = new Constant("KINE_FRIC_COEFF", 0.7, Type.DOUBLE); //should be < static
+    public static Constant ROBOT_MASS = new Constant("ROBOT_MASS", 45, Type.DOUBLE);
+    public static Constant ROBOT_WIDTH = new Constant("ROBOT_WIDTH", 0.6096, Type.DOUBLE);
+    public static Constant DIST_BETWEEN_WHEELS = new Constant("DIST_BETWEEN_WHEELS", 0.508, Type.DOUBLE);
+    public static Constant WHEEL_RADIUS = new Constant("WHEEL_RADIUS", 0.0635, Type.DOUBLE); //5 inch diameter
+    public static Constant STATIC_FRIC_COEFF = new Constant("STATIC_FRIC_COEFF", 1.1, Type.DOUBLE); //between wheels and ground
+    public static Constant KINE_FRIC_COEFF = new Constant("KINE_FRIC_COEFF", 0.7, Type.DOUBLE); //should be < public static
 
     //Overall makes motors slower
-    static Constant GEAR_STATIC_FRIC = new Constant("GEAR_STATIC_FRIC", 0.9, Type.DOUBLE); //actual torque against gearbox when not moving, not the coefficient 
-    static Constant GEAR_KINE_FRIC = new Constant("GEAR_KINE_FRIC", 0.5, Type.DOUBLE); //actual torque against gearbox when not moving, not the coefficient 
-    static Constant GEAR_FRIC_THRESHOLD = new Constant("GEAR_FRIC_THRESHOLD", 0.01, Type.DOUBLE); //lowest motor speed in rad/sec considered as 'moving' to kine fric
+    public static Constant GEAR_STATIC_FRIC = new Constant("GEAR_STATIC_FRIC", 0.9, Type.DOUBLE); //actual torque against gearbox when not moving, not the coefficient 
+    public static Constant GEAR_KINE_FRIC = new Constant("GEAR_KINE_FRIC", 0.5, Type.DOUBLE); //actual torque against gearbox when not moving, not the coefficient 
+    public static Constant GEAR_FRIC_THRESHOLD = new Constant("GEAR_FRIC_THRESHOLD", 0.01, Type.DOUBLE); //lowest motor speed in rad/sec considered as 'moving' to kine fric
 
     // Wheel scrub torque slows turning, coeff is a combo of fric coeff, drop center, robot length.
-    static Constant WHEEL_SCRUB_STATIC_COEFF = new Constant("WHEEL_SCRUB_STATIC_COEFF", 0.012, Type.DOUBLE); 
-    static Constant WHEEL_SCRUB_KINE_COEFF = new Constant("WHEEL_SCRUB_KINE_COEFF", 0.01, Type.DOUBLE); 
-    static Constant WHEEL_SCRUB_FRIC_THRESHOLD = new Constant("WHEEL_SCRUB_FRIC_THRESHOLD", 0.01, Type.DOUBLE); //lowest robot rad/sec considered as 'moving' to kine fric
+    public static Constant WHEEL_SCRUB_STATIC_COEFF = new Constant("WHEEL_SCRUB_STATIC_COEFF", 0.012, Type.DOUBLE); 
+    public static Constant WHEEL_SCRUB_KINE_COEFF = new Constant("WHEEL_SCRUB_KINE_COEFF", 0.01, Type.DOUBLE); 
+    public static Constant WHEEL_SCRUB_FRIC_THRESHOLD = new Constant("WHEEL_SCRUB_FRIC_THRESHOLD", 0.01, Type.DOUBLE); //lowest robot rad/sec considered as 'moving' to kine fric
 
-    static Constant GRAV_ACCEL = new Constant("GRAV_ACCEL", 9.81, Type.DOUBLE);
+    public static Constant GRAV_ACCEL = new Constant("GRAV_ACCEL", 9.81, Type.DOUBLE);
 
-    // static Constant CIM_STALL_TORQUE = new Constant("CIM_STALL_TORQUE", 2.413);
-    static double CIM_STALL_TORQUE = 2.413;
-    static double CIM_TORQUE_SLOPE = -0.0004527;
-    static double MINICIM_STALL_TORQUE = 1.409;
-    static double MINICIM_TORQUE_SLOPE = -0.0002413;
-    static double REDLINE_STALL_TORQUE = 0.7080;
-    static double REDLINE_TORQUE_SLOPE = -3.779e-05;
 
-    static Constant CONTROLLER_INDEX = new Constant("Controller_INDEX", 0, Type.INT); //which joystick?
 
-    static Constant DISPLAY_SCALE = new Constant("DISPLAY_SCALE", 100, Type.DOUBLE); //in pixels per meter
+    public static Constant CONTROLLER_INDEX = new Constant("Controller_INDEX", 0, Type.INT); //which joystick?
+
+    public static Constant DISPLAY_SCALE = new Constant("DISPLAY_SCALE", 50, Type.DOUBLE); //in pixels per meter
 
     //constants that are editable by GraphicInput
-    static Constant[] constants = {GEAR_RATIO, 
-                                   MOTORS_PER_SIDE, 
+    public static Constant[] constants = {GEAR_RATIO, 
                                    ROBOT_MASS, 
                                    ROBOT_WIDTH, 
                                    DIST_BETWEEN_WHEELS,
@@ -84,18 +79,18 @@ public class Constants{
     
     
     
-    static double HALF_DIST_BETWEEN_WHEELS = DIST_BETWEEN_WHEELS.getDouble() / 2.0;
-    static double STATIC_FRIC = ROBOT_MASS.getDouble() * GRAV_ACCEL.getDouble() * STATIC_FRIC_COEFF.getDouble();
-    static double KINE_FRIC = ROBOT_MASS.getDouble() * GRAV_ACCEL.getDouble() * KINE_FRIC_COEFF.getDouble();
+    public static double HALF_DIST_BETWEEN_WHEELS = DIST_BETWEEN_WHEELS.getDouble() / 2.0;
+    public static double STATIC_FRIC = ROBOT_MASS.getDouble() * GRAV_ACCEL.getDouble() * STATIC_FRIC_COEFF.getDouble();
+    public static double KINE_FRIC = ROBOT_MASS.getDouble() * GRAV_ACCEL.getDouble() * KINE_FRIC_COEFF.getDouble();
 
-    static double WHEEL_SCRUB_STATIC = ROBOT_MASS.getDouble() * GRAV_ACCEL.getDouble() * WHEEL_SCRUB_STATIC_COEFF.getDouble(); //is a torque
-    static double WHEEL_SCRUB_KINE = ROBOT_MASS.getDouble() * GRAV_ACCEL.getDouble() * WHEEL_SCRUB_KINE_COEFF.getDouble(); //is a torque
+    public static double WHEEL_SCRUB_STATIC = ROBOT_MASS.getDouble() * GRAV_ACCEL.getDouble() * WHEEL_SCRUB_STATIC_COEFF.getDouble(); //is a torque
+    public static double WHEEL_SCRUB_KINE = ROBOT_MASS.getDouble() * GRAV_ACCEL.getDouble() * WHEEL_SCRUB_KINE_COEFF.getDouble(); //is a torque
 
-    static double ROBOT_ROT_INERTIA = (1.0/6.0) * ROBOT_MASS.getDouble() * ROBOT_WIDTH.getDouble() * ROBOT_WIDTH.getDouble();
-    // static double ROBOT_ROT_INERTIA = 2;
+    public static double ROBOT_ROT_INERTIA = (1.0/6.0) * ROBOT_MASS.getDouble() * ROBOT_WIDTH.getDouble() * ROBOT_WIDTH.getDouble();
+    // public static double ROBOT_ROT_INERTIA = 2;
     //https://en.wikipedia.org/wiki/List_of_moments_of_inertia
 
-    static void calcConstants(){
+    public static void calcConstants(){
         HALF_DIST_BETWEEN_WHEELS = DIST_BETWEEN_WHEELS.getDouble() / 2.0;
         STATIC_FRIC = ROBOT_MASS.getDouble() * GRAV_ACCEL.getDouble() * STATIC_FRIC_COEFF.getDouble();
         KINE_FRIC = ROBOT_MASS.getDouble() * GRAV_ACCEL.getDouble() * KINE_FRIC_COEFF.getDouble();
@@ -106,7 +101,7 @@ public class Constants{
         ROBOT_ROT_INERTIA = (1.0/6.0) * ROBOT_MASS.getDouble() * ROBOT_WIDTH.getDouble() * ROBOT_WIDTH.getDouble();
     }
 
-    static Boolean checkTypes(){
+    public static Boolean checkTypes(){
         Boolean good = true;
         for(Constant constant : constants){
             try{
@@ -121,7 +116,7 @@ public class Constants{
         return good;
     }
 
-    static void setAllToDefault(){
+    public static void setAllToDefault(){
         for(Constant constant : constants){
             constant.setValue(constant.defaultValue);
         }

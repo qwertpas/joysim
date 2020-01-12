@@ -19,6 +19,8 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import sim3.userclasses.UserCode;
+
 public class GraphicSim extends JPanel implements MouseListener {
 	private static final long serialVersionUID = -87884863222799400L;
 
@@ -54,15 +56,15 @@ public class GraphicSim extends JPanel implements MouseListener {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-		int x = (int) Util.posModulo(Robot.physics.x * Constants.DISPLAY_SCALE.getDouble(), windowWidth); // robot position in pixels
-		int y = (int) Util.posModulo(Robot.physics.y * Constants.DISPLAY_SCALE.getDouble(), windowHeight);
+		int x = (int) Util.posModulo(Main.robot.x * Constants.DISPLAY_SCALE.getDouble(), windowWidth); // robot position in pixels
+		int y = (int) Util.posModulo(Main.robot.y * Constants.DISPLAY_SCALE.getDouble(), windowHeight);
 
-		g.drawString("left encoder (in) "+ Robot.leftEncoderDist(), 500, 700);
-		g.drawString("right encoder (in) "+ Robot.leftEncoderDist(), 500, 725);
-		g.drawString("linear velocity (ft/sec) " + Util.roundHundreths(Util.metersToFeet(Robot.physics.linVelo)), 500, 750);
+		g.drawString("left encoder pos "+ Main.robot.leftEncoderPosition(), 500, 700);
+		g.drawString("right encoder pos "+ Main.robot.rightEncoderPosition(), 500, 725);
+		g.drawString("linear velocity (ft/sec) " + Util.roundHundreths(Util.metersToFeet(Main.robot.linVelo)), 500, 750);
 		g.drawString("left power "+ Util.roundHundreths(UserCode.lPower), 500, 775);
 		g.drawString("right power "+ Util.roundHundreths(UserCode.rPower), 500, 800);
-		g.drawString("elapsed time " + Util.roundHundreths(Robot.elaspedTime), 500, 825);
+		g.drawString("elapsed time " + Util.roundHundreths(Main.elaspedTime), 500, 825);
 
 		//drawing the grid
 		g.setColor(Color.GRAY.brighter());
@@ -77,7 +79,7 @@ public class GraphicSim extends JPanel implements MouseListener {
 		int robotCenterX = x + robotDisplayWidth/2;
 		int robotCenterY = y + robotDisplayWidth/2;
 
-		g2d.rotate(Robot.physics.heading, robotCenterX, robotCenterY);
+		g2d.rotate(Main.robot.heading, robotCenterX, robotCenterY);
 
 		g2d.scale(robotScale, robotScale);
 		

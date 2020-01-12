@@ -60,9 +60,9 @@ public class Util {
     public static class MotionProfile{
 
         double vmax, amax, amin, target;
-        Boolean isTrapezoid;
-        double[] times;
-        Boolean done = false;
+        public Boolean isTrapezoid;
+        public double[] times;
+        public Boolean done = false;
 
         public MotionProfile(double vmax_input, double amax_input, double amin_input, double target_input){
             vmax = vmax_input;
@@ -132,7 +132,9 @@ public class Util {
         }
 
         public class MotionProfilePoint{
-            double accel, velo, dist;
+            double accel;
+			public double velo;
+			public double dist;
             public MotionProfilePoint(double accel_input, double velo_input, double dist_input){
                 accel = accel_input;
                 velo = velo_input;
