@@ -64,11 +64,11 @@ public class UserCode_MoPro{
     // Graphs
     static Serie currentPositionSerie = new Serie(Color.BLUE, 3);
     static Serie targetPositionSerie = new Serie(Color.RED, 3);
-    static GraphicDebug positionWindow = new GraphicDebug("Position", new Serie[]{currentPositionSerie, targetPositionSerie});
+    static GraphicDebug positionWindow = new GraphicDebug("Position", new Serie[]{currentPositionSerie, targetPositionSerie}, 100);
 
     static Serie currentVelocitySerie = new Serie(Color.BLUE, 3);
     static Serie targetVelocitySerie = new Serie(Color.RED, 3);
-    static GraphicDebug velocityWindow = new GraphicDebug("Velocity", new Serie[]{currentVelocitySerie, targetVelocitySerie});
+    static GraphicDebug velocityWindow = new GraphicDebug("Velocity", new Serie[]{currentVelocitySerie, targetVelocitySerie}, 100);
     
     private static void graph(){
         currentPositionSerie.addPoint(Main.elaspedTime, Main.robot.leftEncoderPosition());

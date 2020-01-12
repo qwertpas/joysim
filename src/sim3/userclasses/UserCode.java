@@ -37,10 +37,10 @@ public class UserCode{
 
     // Motion graphs
     static Serie currentPositionSerie = new Serie(Color.BLUE, 3);
-    static GraphicDebug positionWindow = new GraphicDebug("Position", new Serie[]{currentPositionSerie});
+    static GraphicDebug positionWindow = new GraphicDebug("Position", new Serie[]{currentPositionSerie}, 100);
 
     static Serie currentVelocitySerie = new Serie(Color.BLUE, 3);
-    static GraphicDebug velocityWindow = new GraphicDebug("Velocity", new Serie[]{currentVelocitySerie});
+    static GraphicDebug velocityWindow = new GraphicDebug("Velocity", new Serie[]{currentVelocitySerie}, 100);
     
     private static void graph(){
         currentPositionSerie.addPoint(Main.elaspedTime, Main.robot.leftEncoderPosition());

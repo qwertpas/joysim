@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import sim3.GraphicDebug.Serie.Point;
+import sim3.Util.Vector2D;
 
 public class GraphicDebug extends JPanel{
     private static final long serialVersionUID = -3303992246381800667L;
@@ -55,7 +56,7 @@ public class GraphicDebug extends JPanel{
         System.out.println("New GraphicDebug: " + name);
     }
 
-    public GraphicDebug(String name, Serie[] series_input){ // same but allows creating series outside and no need to call addSerie()
+    public GraphicDebug(String name, Serie[] series_input, int maxPoints_input){ // same but allows creating series outside and no need to call addSerie()
         for(Serie serie_input : series_input){
             series.add(serie_input);
         }
@@ -66,6 +67,11 @@ public class GraphicDebug extends JPanel{
 		frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         calcScales();
+
+        for(Serie serie : series){
+            serie.maxLength = maxPoints_input;
+        }
+        
         graphicDebugs.add(this);
 
         System.out.println("New GraphicDebug: " + name);
@@ -86,16 +92,18 @@ public class GraphicDebug extends JPanel{
     public void addSerie(Color color, int lineWidth){
         series.add(new Serie(color, lineWidth));
     }
+
+    
     
     int leftMargin = 20;
     int rightMargin = 20;
     int bottomMargin = 20;
     int topMargin = 20;
 
-    double xMin = -1;
-    double xMax = 1;
-    double yMin = -1;
-    double yMax = 1;
+    double xMin = -0.01;
+    double xMax = 0.01;
+    double yMin = -0.01;
+    double yMax = 0.01;
 
     double plotWidth, plotHeight;
     double xAxis, yAxis;
@@ -175,6 +183,7 @@ public class GraphicDebug extends JPanel{
     public static class Serie{ //series but singular :/
         Color color = Color.BLACK;
         int lineWidth = 1;
+        int maxLength = 300;
         volatile ArrayList<Point> points = new ArrayList<Point>();
         volatile Boolean on = false; //set to true once UserCode initializes
 
@@ -197,7 +206,21 @@ public class GraphicDebug extends JPanel{
         public void addPoint(double x, double y){
             synchronized(points){ //synchronized so usercode thread can call this while painting and avoid concurrentModificationException
                 points.add(new Point(x, y));
+                if(points.size() > maxLength){
+                    points.remove(0);
+                }
             }
+            
+        }
+
+        public void addPoint(Vector2D vector2d){
+            synchronized(points){ //synchronized so usercode thread can call this while painting and avoid concurrentModificationException
+                points.add(new Point(vector2d.x, vector2d.y));
+                if(points.size() > maxLength){
+                    points.remove(0);
+                }
+            }
+            
         }
 
         public class Point{ // quick alternative to java.awt.Point which can only do ints

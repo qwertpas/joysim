@@ -4,6 +4,8 @@ public class Gearbox{
 
     public Motor[] motors = new Motor[2];
 
+    private double angVelo;
+
     public Gearbox(Motor[] motors){
         this.motors = motors;
     }
@@ -20,10 +22,16 @@ public class Gearbox{
         for(Motor motor : motors){
             totalTorque += motor.getTorque();
         }
-        return totalTorque * Constants.GEAR_RATIO.getDouble();
+        return Util.applyFrictions(
+            totalTorque * Constants.GEAR_RATIO.getDouble(),
+            angVelo, 
+            Constants.GEAR_STATIC_FRIC.getDouble(), 
+            Constants.GEAR_KINE_FRIC.getDouble(), 
+            Constants.GEAR_FRIC_THRESHOLD.getDouble());
     }
 
     public void update(double angVelo){
+        this.angVelo = angVelo;
         double motorAngVelo = angVelo * Constants.GEAR_RATIO.getDouble();
         for(int i = 0; i < motors.length; i++){
             motors[i].update(motorAngVelo);

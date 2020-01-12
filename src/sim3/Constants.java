@@ -37,14 +37,12 @@ public class Constants{
     public static Constant KINE_FRIC_COEFF = new Constant("KINE_FRIC_COEFF", 0.7, Type.DOUBLE); //should be < public static
 
     //Overall makes motors slower
-    public static Constant GEAR_STATIC_FRIC = new Constant("GEAR_STATIC_FRIC", 0.9, Type.DOUBLE); //actual torque against gearbox when not moving, not the coefficient 
-    public static Constant GEAR_KINE_FRIC = new Constant("GEAR_KINE_FRIC", 0.5, Type.DOUBLE); //actual torque against gearbox when not moving, not the coefficient 
+    public static Constant GEAR_STATIC_FRIC = new Constant("GEAR_STATIC_FRIC", 3, Type.DOUBLE); //actual torque against gearbox when not moving, not the coefficient 
+    public static Constant GEAR_KINE_FRIC = new Constant("GEAR_KINE_FRIC", 3, Type.DOUBLE); //actual torque against gearbox when not moving, not the coefficient 
     public static Constant GEAR_FRIC_THRESHOLD = new Constant("GEAR_FRIC_THRESHOLD", 0.01, Type.DOUBLE); //lowest motor speed in rad/sec considered as 'moving' to kine fric
 
     // Wheel scrub torque slows turning, coeff is a combo of fric coeff, drop center, robot length.
-    public static Constant WHEEL_SCRUB_STATIC_COEFF = new Constant("WHEEL_SCRUB_STATIC_COEFF", 0.012, Type.DOUBLE); 
-    public static Constant WHEEL_SCRUB_KINE_COEFF = new Constant("WHEEL_SCRUB_KINE_COEFF", 0.01, Type.DOUBLE); 
-    public static Constant WHEEL_SCRUB_FRIC_THRESHOLD = new Constant("WHEEL_SCRUB_FRIC_THRESHOLD", 0.01, Type.DOUBLE); //lowest robot rad/sec considered as 'moving' to kine fric
+    public static Constant WHEEL_SCRUB_MULTIPLIER = new Constant("WHEEL_SCRUB_MULTIPLIER", 30, Type.DOUBLE); 
 
     public static Constant GRAV_ACCEL = new Constant("GRAV_ACCEL", 9.81, Type.DOUBLE);
 
@@ -52,7 +50,7 @@ public class Constants{
 
     public static Constant CONTROLLER_INDEX = new Constant("Controller_INDEX", 0, Type.INT); //which joystick?
 
-    public static Constant DISPLAY_SCALE = new Constant("DISPLAY_SCALE", 50, Type.DOUBLE); //in pixels per meter
+    public static Constant DISPLAY_SCALE = new Constant("DISPLAY_SCALE", 75, Type.DOUBLE); //in pixels per meter
 
     //constants that are editable by GraphicInput
     public static Constant[] constants = {GEAR_RATIO, 
@@ -65,9 +63,7 @@ public class Constants{
                                    GEAR_STATIC_FRIC,
                                    GEAR_KINE_FRIC,
                                    GEAR_FRIC_THRESHOLD,
-                                   WHEEL_SCRUB_STATIC_COEFF,
-                                   WHEEL_SCRUB_KINE_COEFF,
-                                   WHEEL_SCRUB_FRIC_THRESHOLD,
+                                   WHEEL_SCRUB_MULTIPLIER,
                                    GRAV_ACCEL,
                                    CONTROLLER_INDEX,
                                    DISPLAY_SCALE,
@@ -80,11 +76,9 @@ public class Constants{
     
     
     public static double HALF_DIST_BETWEEN_WHEELS = DIST_BETWEEN_WHEELS.getDouble() / 2.0;
+
     public static double STATIC_FRIC = ROBOT_MASS.getDouble() * GRAV_ACCEL.getDouble() * STATIC_FRIC_COEFF.getDouble();
     public static double KINE_FRIC = ROBOT_MASS.getDouble() * GRAV_ACCEL.getDouble() * KINE_FRIC_COEFF.getDouble();
-
-    public static double WHEEL_SCRUB_STATIC = ROBOT_MASS.getDouble() * GRAV_ACCEL.getDouble() * WHEEL_SCRUB_STATIC_COEFF.getDouble(); //is a torque
-    public static double WHEEL_SCRUB_KINE = ROBOT_MASS.getDouble() * GRAV_ACCEL.getDouble() * WHEEL_SCRUB_KINE_COEFF.getDouble(); //is a torque
 
     public static double ROBOT_ROT_INERTIA = (1.0/6.0) * ROBOT_MASS.getDouble() * ROBOT_WIDTH.getDouble() * ROBOT_WIDTH.getDouble();
     // public static double ROBOT_ROT_INERTIA = 2;
@@ -94,9 +88,6 @@ public class Constants{
         HALF_DIST_BETWEEN_WHEELS = DIST_BETWEEN_WHEELS.getDouble() / 2.0;
         STATIC_FRIC = ROBOT_MASS.getDouble() * GRAV_ACCEL.getDouble() * STATIC_FRIC_COEFF.getDouble();
         KINE_FRIC = ROBOT_MASS.getDouble() * GRAV_ACCEL.getDouble() * KINE_FRIC_COEFF.getDouble();
-
-        WHEEL_SCRUB_STATIC = ROBOT_MASS.getDouble() * GRAV_ACCEL.getDouble() * WHEEL_SCRUB_STATIC_COEFF.getDouble(); //is a torque
-        WHEEL_SCRUB_KINE = ROBOT_MASS.getDouble() * GRAV_ACCEL.getDouble() * WHEEL_SCRUB_KINE_COEFF.getDouble(); //is a torque
 
         ROBOT_ROT_INERTIA = (1.0/6.0) * ROBOT_MASS.getDouble() * ROBOT_WIDTH.getDouble() * ROBOT_WIDTH.getDouble();
     }

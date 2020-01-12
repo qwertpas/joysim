@@ -113,7 +113,8 @@ public class GraphicSim extends JPanel implements MouseListener {
 		frame = new JFrame("Robot Sim");
 		sim = new GraphicSim();
 		frame.add(sim);
-		frame.setSize((int) screenWidth, (int) screenHeight);
+		frame.setSize((int) screenWidth-200, (int) screenHeight);
+		frame.setLocation(200, 0);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}

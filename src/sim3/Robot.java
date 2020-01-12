@@ -57,8 +57,8 @@ public class Robot{
 
         angVelo = angVelo + angAccel * dt;
         linVelo = linVelo + linAccel * dt;
-        veloL = linVelo + Constants.HALF_DIST_BETWEEN_WHEELS * angVelo;
-        veloR = linVelo - Constants.HALF_DIST_BETWEEN_WHEELS * angVelo;
+        veloL = linVelo - Constants.HALF_DIST_BETWEEN_WHEELS * angVelo;
+        veloR = linVelo + Constants.HALF_DIST_BETWEEN_WHEELS * angVelo;
 
         heading = heading + angVelo * dt; //integrating angVelo using physics equation
         distL = distL + veloL * dt; //acting as encoder since integrateVelocity() inside motor isn't working
@@ -71,7 +71,7 @@ public class Robot{
 
     private double calcWheelForce(double torque){
         double force = torque / Constants.WHEEL_RADIUS.getDouble();
-        if(force > Constants.STATIC_FRIC * 0.5){
+        if(force > Constants.STATIC_FRIC){
             force = Constants.KINE_FRIC;
             slipping = true;
         } else slipping = false;
@@ -79,9 +79,9 @@ public class Robot{
     }
 
     private double calcTorqueNet(double forceL, double forceR){
-        double torqueMotors = (forceL - forceR) * Constants.HALF_DIST_BETWEEN_WHEELS; //torque around center of robot
-        //apply scrub
-        torqueNet = Util.applyFrictions(torqueMotors, angVelo, Constants.WHEEL_SCRUB_STATIC, Constants.WHEEL_SCRUB_KINE, Constants.WHEEL_SCRUB_FRIC_THRESHOLD.getDouble());
+        double torqueMotors = (forceR - forceL) * Constants.HALF_DIST_BETWEEN_WHEELS; //torque around center of robot
+
+        torqueNet = torqueMotors - Constants.WHEEL_SCRUB_MULTIPLIER.getDouble() * angVelo;
         return torqueNet;
     }
 
