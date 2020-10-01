@@ -39,8 +39,6 @@ public class Main {
                 GraphicSim.sim.repaint();
             }
 
-            System.out.println(Constants.ROBOT_ROT_INERTIA);
-
 
             try {
                 Thread.sleep(5);
