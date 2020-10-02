@@ -1,15 +1,17 @@
 package sim3;
 
+import sim3.Util.Vector2D;
+import sim3.Util.Vector2D.Type;
+
 public class Robot{
 
-    double x = 5;
-    double y = 6;
+    Vector2D globalPos = new Vector2D();
     double heading = 0;
 
     public double linVelo = 0;
     double angVelo = 0;
 
-    double linAccel = 0.1;
+    double linAccel = 0;
     double angAccel = 0;
 
     double veloL = 0;
@@ -43,11 +45,11 @@ public class Robot{
         leftGearbox.update(veloL / Constants.WHEEL_RADIUS.getDouble());
         rightGearbox.update(veloR / Constants.WHEEL_RADIUS.getDouble());
 
-        torqueL = leftGearbox.getOutputTorque() - Constants.TURN_ERROR.getDouble();
-        torqueR = rightGearbox.getOutputTorque() + Constants.TURN_ERROR.getDouble();
+        torqueL = leftGearbox.getOutputTorque();
+        torqueR = rightGearbox.getOutputTorque();
 
-        double forceL = calcWheelForce(torqueL);
-        double forceR = calcWheelForce(torqueR);
+        double forceL = calcWheelForce(torqueL) + Constants.TURN_ERROR.getDouble();
+        double forceR = calcWheelForce(torqueR) - Constants.TURN_ERROR.getDouble();
 
         torqueNet = calcTorqueNet(forceL, forceR); //newton*meters
         forceNet = forceL + forceR; //newtons
@@ -60,12 +62,11 @@ public class Robot{
         veloL = linVelo - Constants.HALF_DIST_BETWEEN_WHEELS * angVelo;
         veloR = linVelo + Constants.HALF_DIST_BETWEEN_WHEELS * angVelo;
 
-        heading = heading + angVelo * dt; //integrating angVelo using physics equation
-        distL = distL + veloL * dt; //acting as encoder since integrateVelocity() inside motor isn't working
+        heading = heading + angVelo * dt;
+        distL = distL + veloL * dt; 
         distR = distR + veloR * dt;
 
-        x = x + linVelo * dt * Math.cos(heading); //for display purposes
-        y = y + linVelo * dt * Math.sin(heading);
+        globalPos =  globalPos.add(new Vector2D(linVelo * dt, heading, Type.POLAR));
     }
 
 
@@ -81,41 +82,16 @@ public class Robot{
     private double calcTorqueNet(double forceL, double forceR){
         double torqueMotors = (forceR - forceL) * Constants.HALF_DIST_BETWEEN_WHEELS; //torque around center of robot
 
-        torqueNet = torqueMotors - Constants.WHEEL_SCRUB_MULTIPLIER.getDouble() * angVelo;
+        torqueNet = Util.applyFrictions(
+            torqueMotors, 
+            angVelo, 
+            Constants.SCRUB_STATIC_FRIC.getDouble(), 
+            Constants.SCRUB_KINE_FRIC.getDouble(), 
+            Constants.ANG_FRIC_THRESHOLD.getDouble());
+
         return torqueNet;
     }
 
-    public double leftEncoderPosition(){
-        double encoderDistSum = 0;
-        for(Motor motor : leftGearbox.motors){
-            encoderDistSum += motor.getEncoderPosition();
-        }
-        return Util.roundHundreths(encoderDistSum / (double)leftGearbox.motors.length);
-    }
-
-    public double leftEncoderVelocity(){
-        double encoderDistSum = 0;
-        for(Motor motor : leftGearbox.motors){
-            encoderDistSum += motor.getEncoderVelocity();
-        }
-        return Util.roundHundreths(encoderDistSum / (double)leftGearbox.motors.length);
-    }
-
-    public double rightEncoderPosition(){
-        double encoderDistSum = 0;
-        for(Motor motor : rightGearbox.motors){
-            encoderDistSum += motor.getEncoderPosition();
-        }
-        return Util.roundHundreths(encoderDistSum / (double)rightGearbox.motors.length);
-    }
-
-    public double rightEncoderVelocity(){
-        double encoderDistSum = 0;
-        for(Motor motor : rightGearbox.motors){
-            encoderDistSum += motor.getEncoderVelocity();
-        }
-        return Util.roundHundreths(encoderDistSum / (double)rightGearbox.motors.length);
-    }
 
 
 }

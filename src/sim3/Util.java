@@ -11,7 +11,7 @@ public class Util {
       return 0;
     }
 
-    double velocity_direction = Math.copySign(1, velocity);
+    double velocity_direction = Math.signum(velocity);
     return force - (velocity_direction * KINE_FRIC);
   }
  

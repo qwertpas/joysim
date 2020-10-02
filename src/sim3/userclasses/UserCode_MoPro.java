@@ -39,7 +39,7 @@ public class UserCode_MoPro{
         motion = motionProfile.getPoint(Main.elaspedTime);
 
         double fric_feed = 0.1;
-        double x_error = motion.dist - Main.robot.leftEncoderPosition();
+        double x_error = motion.dist - Main.robot.leftGearbox.getAvgEncoderPosition();
         double v_error = motion.velo - Util.metersToInches(Main.robot.linVelo);
 
         if(!motionProfile.done){
@@ -71,7 +71,7 @@ public class UserCode_MoPro{
     static GraphicDebug velocityWindow = new GraphicDebug("Velocity", new Serie[]{currentVelocitySerie, targetVelocitySerie}, 100);
     
     private static void graph(){
-        currentPositionSerie.addPoint(Main.elaspedTime, Main.robot.leftEncoderPosition());
+        currentPositionSerie.addPoint(Main.elaspedTime, Main.robot.leftGearbox.getAvgEncoderPosition());
         targetPositionSerie.addPoint(Main.elaspedTime, motion.dist);
 
         currentVelocitySerie.addPoint(Main.elaspedTime, Util.metersToInches(Main.robot.linVelo));

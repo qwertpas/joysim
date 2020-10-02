@@ -56,11 +56,11 @@ public class GraphicSim extends JPanel implements MouseListener {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-		int x = (int) Util.posModulo(Main.robot.x * Constants.DISPLAY_SCALE.getDouble(), windowWidth); // robot position in pixels
-		int y = (int) Util.posModulo(Main.robot.y * Constants.DISPLAY_SCALE.getDouble(), windowHeight);
+		int x = (int) Util.posModulo(Main.robot.globalPos.x * Constants.DISPLAY_SCALE.getDouble(), windowWidth); // robot position in pixels
+		int y = (int) Util.posModulo(Main.robot.globalPos.y * Constants.DISPLAY_SCALE.getDouble(), windowHeight);
 
-		g.drawString("left encoder pos "+ Main.robot.leftEncoderPosition(), 500, 700);
-		g.drawString("right encoder pos "+ Main.robot.rightEncoderPosition(), 500, 725);
+		g.drawString("left encoder pos "+ Main.robot.leftGearbox.motors[0].getEncoderPosition(), 500, 700);
+		g.drawString("right encoder pos "+ Main.robot.rightGearbox.motors[0].getEncoderPosition(), 500, 725);
 		g.drawString("linear velocity (ft/sec) " + Util.roundHundreths(Util.metersToFeet(Main.robot.linVelo)), 500, 750);
 		g.drawString("left power "+ Util.roundHundreths(UserCode.lPower), 500, 775);
 		g.drawString("right power "+ Util.roundHundreths(UserCode.rPower), 500, 800);
