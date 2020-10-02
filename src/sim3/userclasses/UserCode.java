@@ -20,11 +20,8 @@ public class UserCode{
 
     public static void execute(){ //this function is run 50 times a second (every 0.02 second)
 
-
-        double[] powers = Util.cheesyDrive(-Controls.rawY, Controls.rawX*0.4, true, false);
-
-        lPower = powers[0];
-        rPower = powers[1];
+        lPower = -Controls.rawY*0.7 - Controls.rawX * 0.5;
+        rPower = -Controls.rawY*0.7 + Controls.rawX * 0.5;
 
         setDrivePowers(lPower, rPower); //power ranges from -1 to 1
 

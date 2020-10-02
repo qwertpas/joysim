@@ -5,7 +5,7 @@ import sim3.Util.Vector2D.Type;
 
 public class Robot{
 
-    Vector2D globalPos = new Vector2D();
+    Vector2D globalPos = new Vector2D(2, 2, Type.CARTESIAN);
     double heading = 0;
 
     public double linVelo = 0;
@@ -31,6 +31,8 @@ public class Robot{
 
     public Gearbox leftGearbox = new Gearbox(2);
     public Gearbox rightGearbox = new Gearbox(2);
+
+    double leftOdoEncoderPos, rightOdoEncoderPos, centerOdoEncoderPos = 0;
 
     public void init(){
         lastTime = System.nanoTime();
@@ -67,6 +69,8 @@ public class Robot{
         distR = distR + veloR * dt;
 
         globalPos =  globalPos.add(new Vector2D(linVelo * dt, heading, Type.POLAR));
+
+        simulateOdometry();
     }
 
 
@@ -90,6 +94,19 @@ public class Robot{
             Constants.ANG_FRIC_THRESHOLD.getDouble());
 
         return torqueNet;
+    }
+
+    private void simulateOdometry(){
+        double leftOdoVelo = linVelo - Constants.LEFT_ODO_Y.getDouble() * angVelo;
+        double rightOdoVelo = linVelo - Constants.RIGHT_ODO_Y.getDouble() * angVelo;
+        double centerOdoVelo = Constants.CENTER_ODO_X.getDouble() * angVelo;
+
+        double odoEncoderTicksPerRad = 8192.0 / (2 * Math.PI); 
+        double odoWheelRadius = 0.024;
+
+        leftOdoEncoderPos += (leftOdoVelo / odoWheelRadius) * odoEncoderTicksPerRad * dt;
+        rightOdoEncoderPos += (rightOdoVelo / odoWheelRadius) * odoEncoderTicksPerRad * dt;
+        centerOdoEncoderPos += (centerOdoVelo / odoWheelRadius) * odoEncoderTicksPerRad * dt;
     }
 
 

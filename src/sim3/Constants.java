@@ -36,21 +36,25 @@ public class Constants{
     public static Constant KINE_FRIC_COEFF = new Constant("KINE_FRIC_COEFF", 0.7, Type.DOUBLE); //should be < static
 
     //Overall makes motors slower
-    public static Constant GEAR_STATIC_FRIC = new Constant("GEAR_STATIC_FRIC", 0.6, Type.DOUBLE); //actual torque against gearbox when not moving, not the coefficient 
-    public static Constant GEAR_KINE_FRIC = new Constant("GEAR_KINE_FRIC", 0.5, Type.DOUBLE); //actual torque against gearbox when not moving, not the coefficient 
+    public static Constant GEAR_STATIC_FRIC = new Constant("GEAR_STATIC_FRIC", 0.5, Type.DOUBLE); //actual torque against gearbox when not moving, not the coefficient 
+    public static Constant GEAR_KINE_FRIC = new Constant("GEAR_KINE_FRIC", 0.4, Type.DOUBLE); //actual torque against gearbox when not moving, not the coefficient 
 
-    // Wheel scrub torque slows turning, coeff is a combo of fric coeff, drop center, robot length.
-    public static Constant SCRUB_STATIC_FRIC = new Constant("SCRUB_STATIC_FRIC", 1, Type.DOUBLE); 
-    public static Constant SCRUB_KINE_FRIC = new Constant("SCRUB_KINE_FRIC", 1, Type.DOUBLE); 
+    // Wheel scrub torque slows turning, is a combo of fric coeff, drop center, robot length.
+    public static Constant SCRUB_STATIC_FRIC = new Constant("SCRUB_STATIC_FRIC", 0.6, Type.DOUBLE);
+    public static Constant SCRUB_KINE_FRIC = new Constant("SCRUB_KINE_FRIC", 0.5, Type.DOUBLE); 
 
     public static Constant ANG_FRIC_THRESHOLD = new Constant("ANG_FRIC_THRESHOLD", 0.01, Type.DOUBLE); //lowest rad/sec considered as 'moving' to apply kine fric
     
     public static Constant GRAV_ACCEL = new Constant("GRAV_ACCEL", 9.81, Type.DOUBLE);
 
     public static Constant CONTROLLER_INDEX = new Constant("Controller_INDEX", 0, Type.INT); //which joystick?
-    public static Constant DISPLAY_SCALE = new Constant("DISPLAY_SCALE", 100, Type.DOUBLE); //in pixels per meter
+    public static Constant DISPLAY_SCALE = new Constant("DISPLAY_SCALE", 200, Type.DOUBLE); //in pixels per meter
 
     public static Constant TURN_ERROR = new Constant("TURN_ERROR", 0.0, Type.DOUBLE); //difference in powers between the two sides (build problem)
+
+    public static Constant LEFT_ODO_Y = new Constant("LEFT_ODO_Y", 0.201295, Type.DOUBLE);
+    public static Constant RIGHT_ODO_Y = new Constant("RIGHT_ODO_Y", -0.201295, Type.DOUBLE);
+    public static Constant CENTER_ODO_X = new Constant("CENTER_ODO_X", -0.18878, Type.DOUBLE);
 
 
     //constants that are editable by GraphicInput
@@ -65,7 +69,7 @@ public class Constants{
                                    ANG_FRIC_THRESHOLD,
                                    CONTROLLER_INDEX,
                                    DISPLAY_SCALE,
-                                   TURN_ERROR,
+                                   TURN_ERROR
                                   };
 
     /** ////////////////////////////////
