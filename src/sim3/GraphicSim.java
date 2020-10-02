@@ -77,6 +77,12 @@ public class GraphicSim extends JPanel implements MouseListener {
         drawFromRobotCenter(g, odoImage, 0, Constants.RIGHT_ODO_Y.getDouble(), 0, 0.2, this);
         drawFromRobotCenter(g, odoImage, Constants.CENTER_ODO_X.getDouble(), 0, 0.5*Math.PI, 0.2, this);
 
+        if(Main.robot.slippingL){
+            drawFromRobotCenter(g, slipImage, 0, Constants.HALF_DIST_BETWEEN_WHEELS, 0, 0.5, this);
+        }
+        if(Main.robot.slippingR){
+            drawFromRobotCenter(g, slipImage, 0, -Constants.HALF_DIST_BETWEEN_WHEELS, 0, 0.5, this);
+        }
 
     }
 

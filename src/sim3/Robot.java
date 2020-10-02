@@ -24,7 +24,8 @@ public class Robot{
     double torqueR;
     double torqueNet;
     double forceNet;
-    Boolean slipping = false;
+    boolean slippingL = false; 
+    boolean slippingR = false;
 
     static double dt;
     static double lastTime;
@@ -50,8 +51,18 @@ public class Robot{
         torqueL = leftGearbox.getOutputTorque();
         torqueR = rightGearbox.getOutputTorque();
 
-        double forceL = calcWheelForce(torqueL) + Constants.TURN_ERROR.getDouble();
-        double forceR = calcWheelForce(torqueR) - Constants.TURN_ERROR.getDouble();
+        double forceL = (torqueL / Constants.WHEEL_RADIUS.getDouble()) + Constants.TURN_ERROR.getDouble();
+        double forceR = (torqueR / Constants.WHEEL_RADIUS.getDouble()) - Constants.TURN_ERROR.getDouble();
+
+        if(forceL > Constants.STATIC_FRIC){
+            forceL = Constants.KINE_FRIC;
+            slippingL = true;
+        } else slippingL = false;
+
+        if(forceR > Constants.STATIC_FRIC){
+            forceR = Constants.KINE_FRIC;
+            slippingR = true;
+        } else slippingR = false;
 
         torqueNet = calcTorqueNet(forceL, forceR); //newton*meters
         forceNet = forceL + forceR; //newtons
@@ -71,16 +82,6 @@ public class Robot{
         globalPos =  globalPos.add(new Vector2D(linVelo * dt, heading, Type.POLAR));
 
         simulateOdometry();
-    }
-
-
-    private double calcWheelForce(double torque){
-        double force = torque / Constants.WHEEL_RADIUS.getDouble();
-        if(force > Constants.STATIC_FRIC){
-            force = Constants.KINE_FRIC;
-            slipping = true;
-        } else slipping = false;
-        return force;
     }
 
     private double calcTorqueNet(double forceL, double forceR){
