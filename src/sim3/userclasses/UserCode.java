@@ -25,8 +25,8 @@ public class UserCode{
         lPower = -Controls.rawY*0.7 - Controls.rawX * 0.5;
         rPower = -Controls.rawY*0.7 + Controls.rawX * 0.5;
 
-        lPower = 1;
-        rPower = 0.9;
+        // lPower = 1;
+        // rPower = 0.9;
 
         Main.robot.leftGearbox.setPower(lPower);
         Main.robot.rightGearbox.setPower(rPower);
