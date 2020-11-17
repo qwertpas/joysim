@@ -52,8 +52,7 @@ public class Constants{
 
     public static Constant TURN_ERROR = new Constant("TURN_ERROR", 0.0, Type.DOUBLE); //difference in powers between the two sides (build problem)
 
-    public static Constant LEFT_ODO_Y = new Constant("LEFT_ODO_Y", 0.201295, Type.DOUBLE);
-    public static Constant RIGHT_ODO_Y = new Constant("RIGHT_ODO_Y", -0.201295, Type.DOUBLE);
+    public static Constant SIDE_ODO_Y = new Constant("SIDE_ODO_Y", 0.201295, Type.DOUBLE);
     public static Constant CENTER_ODO_X = new Constant("CENTER_ODO_X", -0.18878, Type.DOUBLE);
 
 

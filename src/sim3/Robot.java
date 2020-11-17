@@ -5,7 +5,7 @@ import sim3.Util.Vector2D.Type;
 
 public class Robot{
 
-    Vector2D globalPos = new Vector2D(2, 2, Type.CARTESIAN);
+    Vector2D globalPos = new Vector2D();
     double heading = 0;
 
     public double linVelo = 0;
@@ -33,7 +33,7 @@ public class Robot{
     public Gearbox leftGearbox = new Gearbox(2);
     public Gearbox rightGearbox = new Gearbox(2);
 
-    double leftOdoEncoderPos, rightOdoEncoderPos, centerOdoEncoderPos = 0;
+    public double leftOdoEncoderPos, rightOdoEncoderPos, centerOdoEncoderPos = 0;
 
     public void init(){
         lastTime = System.nanoTime();
@@ -98,8 +98,8 @@ public class Robot{
     }
 
     private void simulateOdometry(){
-        double leftOdoVelo = linVelo - Constants.LEFT_ODO_Y.getDouble() * angVelo;
-        double rightOdoVelo = linVelo - Constants.RIGHT_ODO_Y.getDouble() * angVelo;
+        double leftOdoVelo = linVelo - Constants.SIDE_ODO_Y.getDouble() * angVelo;
+        double rightOdoVelo = linVelo + Constants.SIDE_ODO_Y.getDouble() * angVelo;
         double centerOdoVelo = Constants.CENTER_ODO_X.getDouble() * angVelo;
 
         double odoEncoderTicksPerRad = 8192.0 / (2 * Math.PI); 

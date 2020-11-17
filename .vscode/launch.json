@@ -1,13 +1,12 @@
 {
     "configurations": [
-    
+
         {
             "type": "java",
             "name": "CodeLens (Launch) - Main",
             "request": "launch",
             "mainClass": "sim3.Main",
             "projectName": "joysim"
-        },
-        
+        }
     ]
 }

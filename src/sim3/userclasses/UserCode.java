@@ -5,7 +5,6 @@ import java.awt.Color;
 import sim3.Controls;
 import sim3.GraphicDebug;
 import sim3.Main;
-import sim3.Util;
 import sim3.GraphicDebug.Serie;
 
 
@@ -13,6 +12,9 @@ public class UserCode{
 
     public static double lPower;
     public static double rPower;
+
+    public static Odometry odometry = new Odometry();
+    static double odoMetersPerTick = 2 * Math.PI * 0.024 / 8192.0;
 
     public static void initialize(){ //this function is run once when the robot starts
         GraphicDebug.turnOnAll(); //displaying the graphs
@@ -23,16 +25,21 @@ public class UserCode{
         lPower = -Controls.rawY*0.7 - Controls.rawX * 0.5;
         rPower = -Controls.rawY*0.7 + Controls.rawX * 0.5;
 
-        setDrivePowers(lPower, rPower); //power ranges from -1 to 1
+        lPower = 1;
+        rPower = 0.9;
+
+        Main.robot.leftGearbox.setPower(lPower);
+        Main.robot.rightGearbox.setPower(rPower);
+
+
+        double leftDist = Main.robot.leftOdoEncoderPos * odoMetersPerTick;
+        double rightDist = Main.robot.rightOdoEncoderPos * odoMetersPerTick;
+
+        odometry.update(leftDist, rightDist);
+
 
         graph(); //updating the graphs
     }
-
-    private static void setDrivePowers(double lPower, double rPower){
-        Main.robot.leftGearbox.setPower(lPower);
-        Main.robot.rightGearbox.setPower(rPower);
-    }
-
 
     // Motion graphs
     static Serie currentLPositionSerie = new Serie(Color.RED, 3);

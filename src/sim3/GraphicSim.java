@@ -5,7 +5,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.ImageObserver;
 import java.awt.Point;
-import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -28,9 +27,11 @@ public class GraphicSim extends JPanel implements MouseListener {
 
 	AffineTransform defaultTransform = new AffineTransform(); //to reset the g2d position and rotation
 
-	static BufferedImage robotImage, slipImage, odoImage;
+	static BufferedImage robotImage, slipImage, odoImage, robot_estImage;
 
-    static int robotCenterXPixel, robotCenterYPixel;
+    double windowWidth = frame.getContentPane().getSize().getWidth();
+	double windowHeight = frame.getContentPane().getSize().getHeight();
+    // static int robotCenterXPixel, robotCenterYPixel;
 
 	static int screenHeight;
 	static int screenWidth;
@@ -47,16 +48,16 @@ public class GraphicSim extends JPanel implements MouseListener {
 	}
 
     @Override
-	public void paint(Graphics g) { //gets called iteratively by JFrame
-		double windowWidth = frame.getContentPane().getSize().getWidth();
-		double windowHeight = frame.getContentPane().getSize().getHeight();
-		super.paint(g);
+    public void paint(Graphics g) { //gets called iteratively by JFrame
+        windowWidth = frame.getContentPane().getSize().getWidth();
+		windowHeight = frame.getContentPane().getSize().getHeight();
+        super.paint(g);
+        
 		// Graphics2D g2d = (Graphics2D) g;
-		// g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-		robotCenterXPixel = (int) Util.posModulo(Main.robot.globalPos.x * Constants.DISPLAY_SCALE.getDouble(), windowWidth); // robot position in pixels
-		robotCenterYPixel = (int) Util.posModulo(Main.robot.globalPos.y * Constants.DISPLAY_SCALE.getDouble(), windowHeight);
-
+        // g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        
+        g.drawString("posest " + UserCode.odometry.estPose.getVector2D().toString(), 500, 700);
+		g.drawString("actual " + Main.robot.globalPos.toString(), 500, 725);
 		g.drawString("linear velocity (ft/sec) " + Util.roundHundreths(Util.metersToFeet(Main.robot.linVelo)), 500, 750);
 		g.drawString("left power "+ Util.roundHundreths(UserCode.lPower), 500, 775);
 		g.drawString("right power "+ Util.roundHundreths(UserCode.rPower), 500, 800);
@@ -72,10 +73,13 @@ public class GraphicSim extends JPanel implements MouseListener {
             g.drawLine(0, i, screenWidth, i);
         }
 
-        drawImageCentered(g, robotImage, robotCenterXPixel, robotCenterYPixel, Main.robot.heading, robotScale, this);
-        drawFromRobotCenter(g, odoImage, 0, Constants.LEFT_ODO_Y.getDouble(), 0, 0.2, this);
-        drawFromRobotCenter(g, odoImage, 0, Constants.RIGHT_ODO_Y.getDouble(), 0, 0.2, this);
+        drawFromRobotCenter(g, robotImage, 0, 0, 0, 1, this);
+        drawFromRobotCenter(g, odoImage, 0, Constants.SIDE_ODO_Y.getDouble(), 0, 0.2, this);
+        drawFromRobotCenter(g, odoImage, 0, -Constants.SIDE_ODO_Y.getDouble(), 0, 0.2, this);
         drawFromRobotCenter(g, odoImage, Constants.CENTER_ODO_X.getDouble(), 0, 0.5*Math.PI, 0.2, this);
+
+        drawGlobal(g, robot_estImage, UserCode.odometry.estPose.x, UserCode.odometry.estPose.y, UserCode.odometry.estPose.heading, robotScale, this);
+
 
         if(Main.robot.slippingL){
             drawFromRobotCenter(g, slipImage, 0, Constants.HALF_DIST_BETWEEN_WHEELS, 0, 0.5, this);
@@ -86,20 +90,37 @@ public class GraphicSim extends JPanel implements MouseListener {
 
     }
 
-    public void drawImageCentered(Graphics g, BufferedImage image, int x, int y, double rotation, double scale, ImageObserver imageObserver){
-		Graphics2D g2d = (Graphics2D) g;
-		AffineTransform initialTransform = g2d.getTransform();
-		g.translate(x + image.getWidth()/2, y + image.getWidth()/2);
-        g2d.rotate(rotation);
+    public int[] convertMeterToPixel(double xMeters, double yMeters){
+        xMeters += 2;
+        yMeters += 2;
+        int pixelX = (int) Util.posModulo(xMeters * Constants.DISPLAY_SCALE.getDouble(), windowWidth); // robot position in pixels
+        int pixelY = (int) Util.posModulo(yMeters * Constants.DISPLAY_SCALE.getDouble(), windowHeight);
+        return new int[] {pixelX, pixelY};
+    }
+
+    public void drawGlobal(Graphics g, BufferedImage image, double xMeters, double yMeters, double heading, double scale, ImageObserver imageObserver){
+        Graphics2D g2d = (Graphics2D) g;
+        AffineTransform initialTransform = g2d.getTransform();
+
+        int[] pixelPos = convertMeterToPixel(xMeters, yMeters);
+
+        g.translate(pixelPos[0] + image.getWidth()/2, pixelPos[1] + image.getWidth()/2);
         g2d.scale(scale, scale);
-		g.drawImage(image, -image.getWidth()/2, -image.getHeight()/2, imageObserver);
+        g2d.rotate(heading);
+
+        g.drawImage(image, -image.getWidth()/2, -image.getHeight()/2, imageObserver);
+
 		g2d.setTransform(initialTransform);
     }
 
     public void drawFromRobotCenter(Graphics g, BufferedImage image, double offsetXMeters, double offsetYMeters, double offsetRotation, double scale, ImageObserver imageObserver){
-		Graphics2D g2d = (Graphics2D) g;
+        
+        Graphics2D g2d = (Graphics2D) g;
         AffineTransform initialTransform = g2d.getTransform();
-        g.translate(robotCenterXPixel + robotImage.getWidth()/2, robotCenterYPixel + robotImage.getWidth()/2);
+
+        int[] robotPixelPos = convertMeterToPixel(Main.robot.globalPos.x, Main.robot.globalPos.y);
+
+        g.translate(robotPixelPos[0] + robotImage.getWidth()/2, robotPixelPos[1] + robotImage.getWidth()/2);
         g2d.scale(robotScale, robotScale);
         g2d.rotate(Main.robot.heading);
 
@@ -120,7 +141,9 @@ public class GraphicSim extends JPanel implements MouseListener {
 		try {
 			robotImage = ImageIO.read(new File("./robot.png"));
 			slipImage = ImageIO.read(new File("./slip.png"));
-			odoImage = ImageIO.read(new File("./odo.png"));
+            odoImage = ImageIO.read(new File("./odo.png"));
+            robot_estImage = ImageIO.read(new File("./robot_est.png"));
+
 		} catch (IOException e) {
 			e.printStackTrace();
         }
@@ -155,7 +178,7 @@ public class GraphicSim extends JPanel implements MouseListener {
 	}
 
 	public void mouseClicked(MouseEvent e) {
-		System.out.println("mouseClicked");
+        System.out.println("mouseClicked");
 	}
 
 
